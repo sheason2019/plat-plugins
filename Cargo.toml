@@ -1,0 +1,4 @@
+[workspace]
+members = ["plugin"]
+resolver = "2"
+[workspace.dependencies]
