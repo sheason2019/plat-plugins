@@ -1,6 +1,6 @@
-package plat:plugin;
+package plat:identity;
 
-world plat {
-    import emit: func(ty: string, payload: string) -> string;
-    export emit: func(ty: string, payload: string) -> string;
+world identity-world {
+    include wasi:http/proxy@0.2.0;
+    export on-init: func();
 }

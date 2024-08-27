@@ -4,18 +4,31 @@ mod methods;
 mod store;
 mod utils;
 
-use bindings::Guest;
-use methods::find_one;
+use bindings::wasi::http::types::{
+    Fields, IncomingRequest, OutgoingBody, OutgoingResponse, ResponseOutparam,
+};
 
 struct Component;
 
-impl Guest for Component {
-    fn emit(ty: String, payload: String) -> String {
-        let func = match ty.as_str() {
-            "find-identity-by-public-key" => find_one,
-            _ => panic!("invalid invoke method type: {}", &ty),
-        };
-        func(payload)
+impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
+    fn handle(request: IncomingRequest, response_out: ResponseOutparam) {
+        let hdrs = Fields::new();
+        let resp = OutgoingResponse::new(hdrs);
+        let body = resp.body().expect("outgoing response");
+
+        ResponseOutparam::set(response_out, Ok(resp));
+
+        let out = body.write().expect("outgoing stream");
+        out.blocking_write_and_flush(b"hello, wasi:http/proxy world!\n")
+            .expect("writing response");
+        drop(out);
+        OutgoingBody::finish(body, None).unwrap();
+    }
+}
+
+impl bindings::Guest for Component {
+    fn on_init() {
+        println!("hello init")
     }
 }
 
