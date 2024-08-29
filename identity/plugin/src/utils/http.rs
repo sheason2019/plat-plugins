@@ -34,9 +34,23 @@ pub fn send_file(uri_path: String, response_out: ResponseOutparam) -> anyhow::Re
 
         ResponseOutparam::set(response_out, Ok(resp));
 
-        body.write()
-            .expect("outgoing stream")
-            .blocking_write_and_flush(&file_bytes)?;
+        let file_len = file_bytes.len();
+        let chunk_size = 2048;
+        let mut chunk_count = file_len / 2048;
+        if file_len % 2048 != 0 {
+            chunk_count = chunk_count + 1;
+        }
+
+        let out = body.write().expect("outgoing stream");
+        for i in 0..chunk_count {
+            let mut end = (i + 1) * chunk_size;
+            if end > file_len {
+                end = file_len;
+            }
+            let chunk = &file_bytes[i * chunk_size..end];
+            out.blocking_write_and_flush(chunk)?;
+        }
+        drop(out);
 
         OutgoingBody::finish(body, None).expect("finish request");
     }
