@@ -3,6 +3,9 @@ use std::{
     path::{self, PathBuf},
 };
 
+pub mod http;
+pub mod http_context;
+
 pub fn must_get_user_dir() -> PathBuf {
     let p = path::Path::new("/static");
     let user_dir = p.join("users");

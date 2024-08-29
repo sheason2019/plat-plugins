@@ -4,31 +4,26 @@ mod methods;
 mod store;
 mod utils;
 
-use bindings::wasi::http::types::{
-    Fields, IncomingRequest, OutgoingBody, OutgoingResponse, ResponseOutparam,
-};
+use bindings::wasi::http::types::{IncomingRequest, Method, ResponseOutparam};
+use utils::{http::send_file, http_context::HttpContext};
 
 struct Component;
 
 impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
     fn handle(request: IncomingRequest, response_out: ResponseOutparam) {
-        let hdrs = Fields::new();
-        hdrs.append(
-            &"Conetnt-Type".to_string(),
-            &"text/html; charset=utf8".as_bytes().to_vec(),
-        )
-        .expect("append content type failed");
+        let http_ctx = HttpContext::from_request(request);
 
-        let resp = OutgoingResponse::new(hdrs);
-        let body = resp.body().expect("outgoing response");
-
-        ResponseOutparam::set(response_out, Ok(resp));
-
-        let out = body.write().expect("outgoing stream");
-        out.blocking_write_and_flush(b"<h1>Hello world</h1>\n")
-            .expect("writing response");
-        drop(out);
-        OutgoingBody::finish(body, None).unwrap();
+        match (http_ctx.method, http_ctx.path.clone()) {
+            (Method::Get, p) => {
+                let mut p = p;
+                if p == "/" || p == "" {
+                    p = "/index.html".to_string();
+                }
+                send_file(p, response_out)
+            }
+            (_method, _path) => panic!("Not Found"),
+        }
+        .expect("handle request failed");
     }
 }
 
