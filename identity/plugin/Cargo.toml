@@ -10,7 +10,6 @@ autosurgeon = "0.8.5"
 automerge = "0.5.11"
 route-recognizer = "0.3.1"
 mime_guess = "2.0.5"
-shared_utils = { path = "../../shared_utils" }
 
 [lib]
 crate-type = ["cdylib"]

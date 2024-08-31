@@ -1,29 +1,35 @@
 #[allow(warnings)]
 mod bindings;
 mod methods;
+mod router;
 mod store;
-mod utils;
 
-use bindings::wasi::http::types::{IncomingRequest, Method, ResponseOutparam};
-use utils::{http::send_file, http_context::HttpContext};
+use std::path::Path;
+
+use bindings::wasi::http::types::{IncomingRequest, ResponseOutparam};
 
 struct Component;
 
 impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
     fn handle(request: IncomingRequest, response_out: ResponseOutparam) {
-        let http_ctx = HttpContext::from_request(request);
-
-        match (http_ctx.method, http_ctx.path.clone()) {
-            (Method::Get, p) => {
-                let mut p = p;
-                if p == "/" || p == "" {
-                    p = "/index.html".to_string();
-                }
-                send_file(p, response_out)
-            }
-            (_method, _path) => panic!("Not Found"),
-        }
-        .expect("handle request failed");
+        let mut router_builder = router::RouterBuilder::new();
+        router_builder
+            .get("*path", |ctx| {
+                let p = ctx.params("path".to_string()).unwrap().clone();
+                let storage_path = Path::new("/storage");
+                ctx.send_file(storage_path.join(p))
+            })
+            .unwrap();
+        router_builder
+            .get("", |ctx| {
+                let storage_path = Path::new("/storage");
+                ctx.send_file(storage_path.join("index.html"))
+            })
+            .unwrap();
+        let router = router_builder.build();
+        router
+            .handle(request, response_out)
+            .expect("handle request failed");
     }
 }
 

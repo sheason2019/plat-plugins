@@ -1,11 +1,10 @@
 use std::{
     fs,
+    path::{Path, PathBuf},
     time::{SystemTime, UNIX_EPOCH},
 };
 
 use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
-
-use crate::utils::must_get_user_dir;
 
 #[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
 pub struct Identity {
@@ -64,4 +63,14 @@ impl Identity {
 
         Ok(())
     }
+}
+
+fn must_get_user_dir() -> PathBuf {
+    let p = Path::new("/static");
+    let user_dir = p.join("users");
+    if !user_dir.exists() {
+        fs::create_dir_all(&user_dir).expect("create user dir failed");
+    }
+
+    user_dir
 }

@@ -206,7 +206,6 @@ dependencies = [
  "autosurgeon",
  "mime_guess",
  "route-recognizer",
- "shared_utils",
  "wit-bindgen-rt",
 ]
 
@@ -362,14 +361,6 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
-]
-
-[[package]]
-name = "shared_utils"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "wit-bindgen-rt",
 ]
 
 [[package]]
