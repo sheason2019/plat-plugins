@@ -5,8 +5,9 @@ use std::{
 };
 
 use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
+#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq, Serialize, Deserialize)]
 pub struct Identity {
     public_key: String,
     username: String,
@@ -16,7 +17,7 @@ pub struct Identity {
     updated_at: u64,
 }
 
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
+#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq, Serialize, Deserialize)]
 pub struct IdentityHost {
     identity_data_address: String,
     identity_page_address: String,
@@ -35,7 +36,7 @@ impl Identity {
 
     pub fn find_one(public_key: String) -> anyhow::Result<Option<Identity>> {
         let user_dir = must_get_user_dir();
-        let identity_file = user_dir.join(public_key);
+        let identity_file = user_dir.join(public_key + ".automerge");
         if !identity_file.exists() {
             return Ok(None);
         }
@@ -47,14 +48,16 @@ impl Identity {
         Ok(Some(identity))
     }
 
-    pub fn save(&mut self) -> anyhow::Result<()> {
+    pub fn mutate_updated_at(&mut self) {
         let time = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("get time by milliseconds since epoch failed")
             .as_millis() as u64;
         self.updated_at = time;
+    }
 
-        let identity_file = must_get_user_dir().join(&self.public_key);
+    pub fn save(&self) -> anyhow::Result<()> {
+        let identity_file = must_get_user_dir().join(self.public_key.clone() + ".automerge");
         let mut doc = automerge::AutoCommit::new();
         reconcile(&mut doc, &self.clone())?;
 
@@ -66,11 +69,11 @@ impl Identity {
 }
 
 fn must_get_user_dir() -> PathBuf {
-    let p = Path::new("/static");
-    let user_dir = p.join("users");
-    if !user_dir.exists() {
-        fs::create_dir_all(&user_dir).expect("create user dir failed");
+    let p = Path::new("/storage");
+    let identity_dir = p.join("identity");
+    if !identity_dir.exists() {
+        fs::create_dir_all(&identity_dir).expect("create identity dir failed");
     }
 
-    user_dir
+    identity_dir
 }

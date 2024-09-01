@@ -35,11 +35,11 @@ impl HttpContext {
         self.response.send_bytes(status_code, bytes)
     }
 
-    pub fn query(&self, query_name: String) -> Option<&String> {
-        self.query_map.get(&query_name)
+    pub fn query(&self, query_name: &str) -> Option<&String> {
+        self.query_map.get(query_name)
     }
 
-    pub fn params(&self, param_name: String) -> Option<&String> {
-        self.param_map.get(&param_name)
+    pub fn params(&self, param_name: &str) -> Option<&String> {
+        self.param_map.get(param_name)
     }
 }
