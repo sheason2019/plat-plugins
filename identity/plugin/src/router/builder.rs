@@ -103,13 +103,22 @@ impl RouterBuilder {
     }
 
     fn get_child_or_create(&mut self, path: Vec<&str>) -> Option<Arc<Mutex<Self>>> {
-        let mut data: Option<Arc<Mutex<Self>>> = None;
+        let mut out: Option<Arc<Mutex<Self>>> = None;
         for p in path {
             let mut node: Option<Arc<Mutex<Self>>> = None;
-            for child in self.children.iter() {
-                if child.lock().unwrap().path == p {
-                    node = Some(child.clone());
-                    break;
+            if out.is_none() {
+                for child in self.children.iter() {
+                    if child.lock().unwrap().path == p {
+                        node = Some(child.clone());
+                        break;
+                    }
+                }
+            } else {
+                for child in out.clone().unwrap().lock().unwrap().children.iter() {
+                    if child.lock().unwrap().path == p {
+                        node = Some(child.clone());
+                        break;
+                    }
                 }
             }
 
@@ -118,14 +127,23 @@ impl RouterBuilder {
                 new_node.path = p.to_string();
 
                 let new_node = Arc::new(Mutex::new(new_node));
-                self.children.push(new_node.clone());
+                if out.is_none() {
+                    self.children.push(new_node.clone());
+                } else {
+                    out.clone()
+                        .unwrap()
+                        .lock()
+                        .unwrap()
+                        .children
+                        .push(new_node.clone());
+                }
                 node = Some(new_node);
             }
 
-            data = node;
+            out = node;
         }
 
-        data
+        out
     }
 
     pub fn match_router(
@@ -141,11 +159,11 @@ impl RouterBuilder {
         let current_path = path_collect.remove(0);
 
         // 完全匹配路径，优先级最高
-        let mut exact_routes: Vec<Arc<Mutex<RouterBuilder>>> = Vec::new();
+        let mut exact_route: Option<Arc<Mutex<RouterBuilder>>> = None;
         // 动态匹配路径，优先级中等
         let mut dynamic_routes: Vec<Arc<Mutex<RouterBuilder>>> = Vec::new();
         // 通配符路径，优先级最低
-        let mut wildcard_routes: Vec<Arc<Mutex<RouterBuilder>>> = Vec::new();
+        let mut wildcard_route: Option<Arc<Mutex<RouterBuilder>>> = None;
 
         let router_builder = this.lock().unwrap();
 
@@ -153,31 +171,20 @@ impl RouterBuilder {
             let p = { child.lock().unwrap().path.clone() };
             if p.starts_with(":") {
                 dynamic_routes.push(child.clone());
-                let path_name = &p.as_str()[1..];
-                path_map
-                    .lock()
-                    .unwrap()
-                    .insert(path_name.to_string(), router_builder.path.clone());
-
                 continue;
             }
             if p.starts_with("*") {
-                wildcard_routes.push(child.clone());
-                let path_name = &p.as_str()[1..];
-                path_map
-                    .lock()
-                    .unwrap()
-                    .insert(path_name.to_string(), original_path.clone());
+                wildcard_route = Some(child.clone());
                 continue;
             }
             if p == current_path {
-                exact_routes.push(child.clone());
+                exact_route = Some(child.clone());
                 continue;
             }
         }
 
-        let next_routes = [exact_routes, dynamic_routes].concat();
-        for route in next_routes {
+        if exact_route.is_some() {
+            let route = exact_route.unwrap();
             let match_route =
                 RouterBuilder::match_router(route, path_map.clone(), path_collect.clone());
             if match_route.is_some() {
@@ -185,8 +192,42 @@ impl RouterBuilder {
             }
         }
 
-        for route in wildcard_routes {
-            return Some(route);
+        for route in dynamic_routes {
+            let path_name = { &route.lock().unwrap().path.clone() };
+            let path_name = &path_name.as_str()[1..];
+            {
+                path_map
+                    .lock()
+                    .unwrap()
+                    .insert(path_name.to_string(), original_path.clone());
+            }
+            let match_route =
+                RouterBuilder::match_router(route, path_map.clone(), path_collect.clone());
+            if match_route.is_some() {
+                return match_route;
+            } else {
+                path_map.lock().unwrap().remove(path_name);
+            }
+        }
+
+        if wildcard_route.is_some() {
+            let route = wildcard_route.unwrap();
+            let path_name = { route.lock().unwrap().path.clone() };
+            let path_name = &path_name.as_str()[1..];
+            {
+                path_map
+                    .clone()
+                    .lock()
+                    .unwrap()
+                    .insert(path_name.to_string(), original_path.clone());
+            }
+            let match_route =
+                RouterBuilder::match_router(route, path_map.clone(), path_collect.clone());
+            if match_route.is_some() {
+                return match_route;
+            } else {
+                path_map.lock().unwrap().remove(path_name);
+            }
         }
 
         None

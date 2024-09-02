@@ -3,6 +3,8 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+use anyhow::Context;
+
 use crate::bindings::wasi::http::types::{IncomingRequest, ResponseOutparam};
 
 use super::{response::Response, HttpContext, RouterBuilder};
@@ -54,7 +56,7 @@ impl Router {
         let path_map = { path_map.clone().lock().unwrap().clone() };
         let ctx = HttpContext::new(query_map, path_map, response_out);
 
-        handler(ctx)?;
+        handler(ctx).context("handle request failed")?;
 
         Ok(())
     }

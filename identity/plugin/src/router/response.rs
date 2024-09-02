@@ -58,7 +58,7 @@ impl Response {
             &"Content-Type".to_string(),
             &"application/json".as_bytes().to_vec(),
         )?;
-        self.send_bytes(status_code, json_string.into_bytes())
+        self.send_bytes(status_code, json_string.as_bytes().to_vec())
     }
 
     pub fn flush(self) -> anyhow::Result<()> {

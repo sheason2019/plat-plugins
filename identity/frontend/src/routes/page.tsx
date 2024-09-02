@@ -1,13 +1,13 @@
-import IdentityCard from "./components/identity-card";
-import useDaemonContext from "./hooks/use-daemon-context";
+import ControlBar from "./components/control-bar";
+import IdentityHero from "./components/identity-hero";
 
 export default function IndexPage() {
-  const { data } = useDaemonContext();
-
   return (
-    <div className="container mx-auto px-3">
-      {JSON.stringify(data)}
-      {/* <IdentityCard  /> */}
+    <div className="container max-w-xs mx-auto px-3 mt-3">
+      <IdentityHero />
+      <div className="mt-3">
+        <ControlBar />
+      </div>
     </div>
   );
 }
