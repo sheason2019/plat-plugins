@@ -1,6 +1,9 @@
 use std::{collections::HashMap, path::PathBuf};
 
-use crate::bindings::wasi::http::types::{ResponseOutparam, StatusCode};
+use crate::{
+    bindings::wasi::http::types::{IncomingRequest, ResponseOutparam, StatusCode},
+    utils,
+};
 
 use super::response::Response;
 
@@ -8,6 +11,8 @@ pub struct HttpContext {
     query_map: HashMap<String, String>,
     param_map: HashMap<String, String>,
     pub response: Response,
+    request: IncomingRequest,
+    body_bytes: Vec<u8>,
 }
 
 impl HttpContext {
@@ -15,12 +20,19 @@ impl HttpContext {
         query_map: HashMap<String, String>,
         param_map: HashMap<String, String>,
         response_out: ResponseOutparam,
+        request: IncomingRequest,
     ) -> Self {
-        HttpContext {
+        let mut ctx = HttpContext {
             query_map,
             param_map,
             response: Response::new(response_out),
-        }
+            request,
+            body_bytes: Vec::new(),
+        };
+
+        ctx.init_body().unwrap();
+
+        ctx
     }
 
     pub fn send_file(self, file_path: PathBuf) -> anyhow::Result<()> {
@@ -41,5 +53,17 @@ impl HttpContext {
 
     pub fn params(&self, param_name: &str) -> Option<&String> {
         self.param_map.get(param_name)
+    }
+
+    pub fn body(&self) -> Vec<u8> {
+        self.body_bytes.clone()
+    }
+
+    fn init_body(&mut self) -> anyhow::Result<()> {
+        let body = self.request.consume().unwrap();
+        let body_bytes = utils::read_incoming_body(body);
+        self.body_bytes = body_bytes;
+
+        Ok(())
     }
 }

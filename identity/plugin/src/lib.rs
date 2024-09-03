@@ -44,6 +44,24 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
             })
             .unwrap();
         router_builder
+            .put("api/identity/:id", |ctx| -> anyhow::Result<()> {
+                let id = ctx.params("id");
+                let public_key = id.unwrap().clone();
+                let identity: Identity = serde_json::from_slice(&ctx.body())?;
+                if identity.public_key != public_key {
+                    panic!("URL 地址与用户信息不匹配");
+                }
+
+                // TODO: 请求签名
+
+                identity.save()?;
+
+                ctx.send_bytes(200, "OK".as_bytes().to_vec())?;
+
+                Ok(())
+            })
+            .unwrap();
+        router_builder
             .get("api/context", |ctx| -> anyhow::Result<()> {
                 let context = utils::get_context();
                 let context = serde_json::to_string(&context)?;

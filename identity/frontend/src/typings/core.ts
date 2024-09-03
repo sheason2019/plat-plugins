@@ -3,7 +3,6 @@ export interface Identity {
   username: string;
   avatar_url: string;
   hosts: IdentityHost[];
-  updated_at: number;
 }
 
 export interface IdentityHost {

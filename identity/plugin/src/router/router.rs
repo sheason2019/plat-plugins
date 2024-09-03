@@ -54,7 +54,7 @@ impl Router {
 
         let handler = handler.unwrap();
         let path_map = { path_map.clone().lock().unwrap().clone() };
-        let ctx = HttpContext::new(query_map, path_map, response_out);
+        let ctx = HttpContext::new(query_map, path_map, response_out, req);
 
         handler(ctx).context("handle request failed")?;
 

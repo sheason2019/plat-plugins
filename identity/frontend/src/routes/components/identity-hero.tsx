@@ -14,7 +14,7 @@ export default function IdentityHero() {
         <div className="flex items-center gap-3">
           <Avatar size="lg" />
           <div className="flex-1 flex flex-col overflow-hidden gap-1">
-            <p className="font-bold">Username</p>
+            <p className="font-bold">{identity?.username}</p>
             <p className="text-gray-500 text-xs whitespace-nowrap text-ellipsis overflow-hidden">
               ID: {identity?.public_key}
             </p>

@@ -1,20 +1,18 @@
 use std::{
     fs,
     path::{Path, PathBuf},
-    time::{SystemTime, UNIX_EPOCH},
 };
 
+use automerge::AutoCommit;
 use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Reconcile, Hydrate, PartialEq, Serialize, Deserialize)]
 pub struct Identity {
-    public_key: String,
-    username: String,
-    avatar_url: String,
-    hosts: Vec<IdentityHost>,
-    // milliseconds since epoch
-    updated_at: u64,
+    pub public_key: String,
+    pub username: String,
+    pub avatar_url: String,
+    pub hosts: Vec<IdentityHost>,
 }
 
 #[derive(Debug, Clone, Reconcile, Hydrate, PartialEq, Serialize, Deserialize)]
@@ -30,7 +28,6 @@ impl Identity {
             username: "".to_string(),
             avatar_url: "".to_string(),
             hosts: Vec::new(),
-            updated_at: 0,
         }
     }
 
@@ -48,17 +45,15 @@ impl Identity {
         Ok(Some(identity))
     }
 
-    pub fn mutate_updated_at(&mut self) {
-        let time = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("get time by milliseconds since epoch failed")
-            .as_millis() as u64;
-        self.updated_at = time;
-    }
-
     pub fn save(&self) -> anyhow::Result<()> {
         let identity_file = must_get_user_dir().join(self.public_key.clone() + ".automerge");
-        let mut doc = automerge::AutoCommit::new();
+        let doc = find_doc(self.public_key.clone())?;
+        let mut doc = if doc.is_some() {
+            doc.unwrap()
+        } else {
+            automerge::AutoCommit::new()
+        };
+
         reconcile(&mut doc, &self.clone())?;
 
         let identity_bytes = doc.save();
@@ -66,6 +61,18 @@ impl Identity {
 
         Ok(())
     }
+}
+
+fn find_doc(public_key: String) -> anyhow::Result<Option<AutoCommit>> {
+    let user_dir = must_get_user_dir();
+    let identity_file = user_dir.join(public_key + ".automerge");
+    if !identity_file.exists() {
+        return Ok(None);
+    }
+
+    let identity_file_bytes = fs::read(identity_file)?;
+    let doc = automerge::AutoCommit::load(&identity_file_bytes)?;
+    Ok(Some(doc))
 }
 
 fn must_get_user_dir() -> PathBuf {

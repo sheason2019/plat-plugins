@@ -3,7 +3,7 @@ use std::u64;
 use crate::bindings::wasi::{
     http::{
         outgoing_handler::{self, OutgoingRequest},
-        types::{self, Fields},
+        types::{self, Fields, IncomingBody},
     },
     io::streams::StreamError,
 };
@@ -15,8 +15,6 @@ pub fn get_context() -> serde_json::Value {
 
     let daemon_address =
         url::Url::parse(&daemon_address).expect("parse daemon_address to url failed");
-
-    let mut body_bytes = Vec::new();
 
     let req = OutgoingRequest::new(Fields::new());
     let context_url = daemon_address.join("context").unwrap();
@@ -41,6 +39,15 @@ pub fn get_context() -> serde_json::Value {
         .expect("get incoming response failed");
 
     let body = response.consume().expect("consume response failed");
+    let body_bytes = read_incoming_body(body);
+
+    let context: serde_json::Value =
+        serde_json::from_slice(&body_bytes).expect("serilize context failed");
+    context
+}
+
+pub fn read_incoming_body(body: IncomingBody) -> Vec<u8> {
+    let mut body_bytes = Vec::new();
     let stream = body.stream().expect("get stream from body failed");
     loop {
         let mut chunk = match stream.read(u64::MAX) {
@@ -52,7 +59,5 @@ pub fn get_context() -> serde_json::Value {
         body_bytes.append(&mut chunk);
     }
 
-    let context: serde_json::Value =
-        serde_json::from_slice(&body_bytes).expect("serilize context failed");
-    context
+    body_bytes
 }
