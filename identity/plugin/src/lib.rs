@@ -2,6 +2,7 @@
 mod bindings;
 mod router;
 mod store;
+mod typings;
 mod utils;
 
 use std::path::Path;
@@ -52,9 +53,11 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
                     panic!("URL 地址与用户信息不匹配");
                 }
 
-                // TODO: 请求签名
-
                 identity.save()?;
+
+                let sign_box = identity.request_sign()?;
+                identity.update_sign(sign_box.signature)?;
+                println!("start send bytes");
 
                 ctx.send_bytes(200, "OK".as_bytes().to_vec())?;
 
@@ -63,7 +66,7 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
             .unwrap();
         router_builder
             .get("api/context", |ctx| -> anyhow::Result<()> {
-                let context = utils::get_context();
+                let context = utils::get_context().expect("get context failed");
                 let context = serde_json::to_string(&context)?;
                 ctx.send_json(200, context)?;
 
@@ -82,7 +85,7 @@ impl bindings::Guest for Component {
         println!("开始执行身份插件逻辑");
 
         println!("尝试从守护进程获取上下文信息");
-        let context = utils::get_context();
+        let context = utils::get_context().expect("get context failed");
         println!("从守护进程获取上下文信息成功");
         let public_key = context
             .get("daemon")

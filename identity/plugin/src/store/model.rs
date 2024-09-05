@@ -5,7 +5,10 @@ use std::{
 
 use automerge::AutoCommit;
 use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
+use base64::Engine;
 use serde::{Deserialize, Serialize};
+
+use crate::{typings::SignBox, utils::get_sign_box};
 
 #[derive(Debug, Clone, Reconcile, Hydrate, PartialEq, Serialize, Deserialize)]
 pub struct Identity {
@@ -58,6 +61,22 @@ impl Identity {
 
         let identity_bytes = doc.save();
         fs::write(identity_file, &identity_bytes)?;
+
+        Ok(())
+    }
+
+    pub fn request_sign(&self) -> anyhow::Result<SignBox> {
+        let identity_file = must_get_user_dir().join(self.public_key.clone() + ".automerge");
+        let identity_bytes = fs::read(identity_file)?;
+        let base64_url_data_string = base64::prelude::BASE64_URL_SAFE.encode(identity_bytes);
+        let sign_box = get_sign_box(base64_url_data_string)?;
+
+        Ok(sign_box)
+    }
+
+    pub fn update_sign(&self, signature: String) -> anyhow::Result<()> {
+        let signature_file = must_get_user_dir().join(self.public_key.clone() + ".signature");
+        fs::write(signature_file, signature)?;
 
         Ok(())
     }

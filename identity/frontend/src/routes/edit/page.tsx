@@ -12,9 +12,12 @@ import { useNavigate } from "react-router-dom";
 export default function EditPage() {
   const navigate = useNavigate();
   const { data: daemonContext } = useDaemonContext();
-  const { data: identity, mutate } = useIdentity(daemonContext.public_key, {
-    suspense: true,
-  });
+  const { data: identity, mutate } = useIdentity(
+    daemonContext.daemon.public_key,
+    {
+      suspense: true,
+    }
+  );
 
   const [value, setValue] = useState<Identity>();
   useEffect(() => {
