@@ -11,5 +11,8 @@ export interface IdentityHost {
 }
 
 export interface DaemonContext {
-  public_key: string;
+  daemon: {
+    public_key: string;
+  };
+  [T: string]: unknown;
 }

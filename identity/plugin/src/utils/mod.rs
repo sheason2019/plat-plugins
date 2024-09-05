@@ -17,15 +17,14 @@ pub fn get_context() -> serde_json::Value {
         url::Url::parse(&daemon_address).expect("parse daemon_address to url failed");
 
     let req = OutgoingRequest::new(Fields::new());
-    let context_url = daemon_address.join("context").unwrap();
-    let path_with_query = &context_url[Position::BeforePath..];
+    let path_with_query = &daemon_address[Position::BeforePath..];
 
     req.set_path_with_query(Some(path_with_query))
         .expect("set path with query");
     req.set_method(&types::Method::Get).expect("set method");
     req.set_scheme(Some(&types::Scheme::Http))
         .expect("set scheme failed");
-    req.set_authority(Some(context_url.authority()))
+    req.set_authority(Some(daemon_address.authority()))
         .expect("set authority failed");
 
     let future_response = outgoing_handler::handle(req, None).expect("handle request failed");

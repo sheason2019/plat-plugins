@@ -85,8 +85,10 @@ impl bindings::Guest for Component {
         let context = utils::get_context();
         println!("从守护进程获取上下文信息成功");
         let public_key = context
+            .get("daemon")
+            .expect("get daemon from context failed")
             .get("public_key")
-            .expect("get public_key from context failed")
+            .expect("get public_key from daemon failed")
             .as_str()
             .expect("parse public_key as str failed");
         println!("当前用户公钥： {}", public_key);
