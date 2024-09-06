@@ -30,7 +30,7 @@ export default function EditPage() {
       axios.put("/api/identity/" + identity?.public_key, JSON.stringify(value)),
     {
       onSuccess() {
-        toast("修改用户信息成功");
+        toast.success("修改用户信息成功");
         mutate();
         navigate("/");
       },
