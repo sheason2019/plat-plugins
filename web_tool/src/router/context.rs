@@ -1,11 +1,8 @@
 use std::{collections::HashMap, path::PathBuf};
 
-use crate::{
-    bindings::wasi::http::types::{IncomingRequest, ResponseOutparam, StatusCode},
-    utils,
-};
+use crate::bindings::wasi::http::types::{IncomingRequest, ResponseOutparam, StatusCode};
 
-use super::response::Response;
+use super::{response::Response, utils};
 
 pub struct HttpContext {
     query_map: HashMap<String, String>,

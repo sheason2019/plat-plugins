@@ -1,0 +1,6 @@
+package plat:identity;
+
+world identity-world {
+    include wasi:http/proxy@0.2.0;
+    export on-init: func();
+}
