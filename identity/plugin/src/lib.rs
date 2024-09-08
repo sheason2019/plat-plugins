@@ -19,7 +19,12 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
             .get("*path", |ctx| {
                 let p = ctx.params("path").unwrap().clone();
                 let storage_path = Path::new("/assets");
-                ctx.send_file(storage_path.join(p))
+                let file_path = storage_path.join(p);
+                if file_path.exists() {
+                    ctx.send_file(file_path)
+                } else {
+                    ctx.send_file(storage_path.join("index.html"))
+                }
             })
             .unwrap();
         router_builder
@@ -57,7 +62,6 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
 
                 let sign_box = identity.request_sign()?;
                 identity.update_sign(sign_box.signature)?;
-                println!("start send bytes");
 
                 ctx.send_bytes(200, "OK".as_bytes().to_vec())?;
 
