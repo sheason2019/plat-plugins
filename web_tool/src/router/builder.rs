@@ -221,13 +221,8 @@ impl RouterBuilder {
                     .unwrap()
                     .insert(path_name.to_string(), original_path.clone());
             }
-            let match_route =
-                RouterBuilder::match_router(route, path_map.clone(), path_collect.clone());
-            if match_route.is_some() {
-                return match_route;
-            } else {
-                path_map.lock().unwrap().remove(path_name);
-            }
+
+            return Some(route);
         }
 
         None

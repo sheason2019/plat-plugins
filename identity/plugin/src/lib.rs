@@ -18,13 +18,13 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
         router_builder
             .get("*path", |ctx| {
                 let p = ctx.params("path").unwrap().clone();
-                let storage_path = Path::new("/storage");
+                let storage_path = Path::new("/assets");
                 ctx.send_file(storage_path.join(p))
             })
             .unwrap();
         router_builder
             .get("", |ctx| {
-                let storage_path = Path::new("/storage");
+                let storage_path = Path::new("/assets");
                 ctx.send_file(storage_path.join("index.html"))
             })
             .unwrap();
