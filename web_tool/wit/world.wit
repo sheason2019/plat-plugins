@@ -1,4 +1,4 @@
-package plat:identity;
+package plat:plugin;
 
 world identity-world {
     include wasi:http/proxy@0.2.0;

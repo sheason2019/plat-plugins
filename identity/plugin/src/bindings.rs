@@ -8378,8 +8378,8 @@ pub(crate) use __export_identity_world_impl as export;
 #[cfg(target_arch = "wasm32")]
 #[link_section = "component-type:wit-bindgen:0.25.0:identity-world:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 7057] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x8c6\x01A\x02\x01A%\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 7055] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x8a6\x01A\x02\x01A%\x01\
 B\x05\x01p}\x01@\x01\x03lenw\0\0\x04\0\x10get-random-bytes\x01\x01\x01@\0\0w\x04\
 \0\x0eget-random-u64\x01\x02\x03\x01\x18wasi:random/random@0.2.0\x05\0\x01B\x04\x04\
 \0\x05error\x03\x01\x01h\0\x01@\x01\x04self\x01\0s\x04\0\x1d[method]error.to-deb\
@@ -8518,8 +8518,8 @@ sw\x0bnanosecondsy\x04\0\x08datetime\x03\0\0\x01@\0\0\x01\x04\0\x03now\x01\x02\x
 esponse-outparam\x01B\x08\x02\x03\x02\x01\x15\x04\0\x10incoming-request\x03\0\0\x02\
 \x03\x02\x01\x16\x04\0\x11response-outparam\x03\0\x02\x01i\x01\x01i\x03\x01@\x02\
 \x07request\x04\x0cresponse-out\x05\x01\0\x04\0\x06handle\x01\x06\x04\x01\x20was\
-i:http/incoming-handler@0.2.0\x05\x17\x04\x01\x1cplat:identity/identity-world\x04\
-\0\x0b\x14\x01\0\x0eidentity-world\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
+i:http/incoming-handler@0.2.0\x05\x17\x04\x01\x1aplat:plugin/identity-world\x04\0\
+\x0b\x14\x01\0\x0eidentity-world\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
 \x0dwit-component\x070.208.1\x10wit-bindgen-rust\x060.25.0";
 
 #[inline(never)]

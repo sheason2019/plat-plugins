@@ -1,0 +1,8 @@
+{
+  "name": "plat/message",
+  "version": "0.1.0",
+  "wasm_root": "../target/wasm32-wasip1/release/message.wasm",
+  "assets_root": "frontend/dist",
+  "storage_root": ".storage",
+  "entries": []
+}
