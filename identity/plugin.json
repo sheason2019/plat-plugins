@@ -1,0 +1,15 @@
+{
+  "name": "dev:plat/identity",
+  "version": "0.1.0",
+  "wasm_root": "../target/wasm32-wasip1/release/identity.wasm",
+  "assets_root": "frontend/dist",
+  "storage_root": ".storage",
+  "entries": [
+    {
+      "label": "用户信息",
+      "icon": "/person.svg",
+      "href": "/",
+      "target": "inner"
+    }
+  ]
+}
