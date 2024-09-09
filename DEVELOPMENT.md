@@ -8,7 +8,14 @@ https://github.com/bytecodealliance/wit-deps
 
 WitBindgen 相关 Issue：https://github.com/bytecodealliance/cargo-component/issues/76。
 
-Windows 下使用 PowerShell 管理符号链接的参考文档：https://www.delftstack.com/zh/howto/powershell/create-symbolic-links-in-powershell。
+Windows 下使用 PowerShell 管理符号链接：
+
+```powershell
+# 例子
+New-Item -ItemType SymbolicLink -Path "./wit" -Target "F:\WorkSpace\plat_plugins\web_tool\wit"
+```
+
+Target 必须使用绝对路径才可以正确创建指向目录的软连接，这个可能是 Powershell 的一个 Bug。
 
 # PlatX
 
