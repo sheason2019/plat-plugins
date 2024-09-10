@@ -8,6 +8,10 @@ use bindings::{
     exports::wasi::http::incoming_handler::{IncomingRequest, ResponseOutparam},
     Guest,
 };
+use chacha20poly1305::{
+    aead::{generic_array::GenericArray, Aead},
+    AeadCore, ChaCha20Poly1305, KeyInit,
+};
 
 struct Component;
 
@@ -42,6 +46,31 @@ impl Guest for Component {
         );
 
         assert_eq!(alice_shared_secret.as_bytes(), bob_shared_secret.as_bytes());
+
+        let plaintext = b"Hello world";
+        let (nonce, cipher_text) = {
+            let key = GenericArray::from_slice(alice_shared_secret.as_bytes());
+            let cipher = ChaCha20Poly1305::new(&key);
+            let nonce = ChaCha20Poly1305::generate_nonce(&mut chacha20poly1305::aead::OsRng);
+            let cipher_text = cipher
+                .encrypt(&nonce, plaintext.as_ref())
+                .expect("加密失败");
+            println!(
+                "cipher text is: {}",
+                base64::prelude::BASE64_URL_SAFE.encode(&cipher_text)
+            );
+            (nonce, cipher_text)
+        };
+
+        let key = GenericArray::from_slice(bob_shared_secret.as_bytes());
+        let cipher = ChaCha20Poly1305::new(&key);
+        let decrypt_text = cipher
+            .decrypt(&nonce, cipher_text.as_ref())
+            .expect("decrypt failed");
+        println!(
+            "decrypt text is: {}",
+            std::str::from_utf8(decrypt_text.as_ref()).unwrap()
+        );
     }
 }
 
