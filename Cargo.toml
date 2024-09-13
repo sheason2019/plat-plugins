@@ -1,4 +1,3 @@
 [workspace]
 members = ["identity/plugin", "message/plugin", "web_tool"]
 resolver = "2"
-[workspace.dependencies]
