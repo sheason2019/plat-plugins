@@ -8037,12 +8037,78 @@ pub mod lock {
     #[doc(hidden)]
     #[cfg(target_arch = "wasm32")]
     static __FORCE_SECTION_REF: fn() = super::__link_custom_section_describing_imports;
+    use super::_rt;
+    #[derive(Clone)]
+    pub struct LockHandler {
+        pub name: _rt::String,
+    }
+    impl ::core::fmt::Debug for LockHandler {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            f.debug_struct("LockHandler")
+                .field("name", &self.name)
+                .finish()
+        }
+    }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn lock(id: &str) {
+    pub fn create_lock_handler(name: &str) -> LockHandler {
         unsafe {
-            let vec0 = id;
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+            let vec0 = name;
             let ptr0 = vec0.as_ptr().cast::<u8>();
             let len0 = vec0.len();
+            let ptr1 = ret_area.0.as_mut_ptr().cast::<u8>();
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "lock")]
+            extern "C" {
+                #[link_name = "create-lock-handler"]
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
+                unreachable!()
+            }
+            wit_import(ptr0.cast_mut(), len0, ptr1);
+            let l2 = *ptr1.add(0).cast::<*mut u8>();
+            let l3 = *ptr1.add(4).cast::<usize>();
+            let len4 = l3;
+            let bytes4 = _rt::Vec::from_raw_parts(l2.cast(), len4, len4);
+            LockHandler {
+                name: _rt::string_lift(bytes4),
+            }
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn drop_lock_handler(handler: &LockHandler) {
+        unsafe {
+            let LockHandler { name: name0 } = handler;
+            let vec1 = name0;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
+
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "lock")]
+            extern "C" {
+                #[link_name = "drop-lock-handler"]
+                fn wit_import(_: *mut u8, _: usize);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize) {
+                unreachable!()
+            }
+            wit_import(ptr1.cast_mut(), len1);
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn lock(handler: &LockHandler) {
+        unsafe {
+            let LockHandler { name: name0 } = handler;
+            let vec1 = name0;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
 
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "lock")]
@@ -8055,20 +8121,178 @@ pub mod lock {
             fn wit_import(_: *mut u8, _: usize) {
                 unreachable!()
             }
-            wit_import(ptr0.cast_mut(), len0);
+            wit_import(ptr1.cast_mut(), len1);
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn unlock(id: &str) {
+    pub fn unlock(handler: &LockHandler) {
         unsafe {
-            let vec0 = id;
-            let ptr0 = vec0.as_ptr().cast::<u8>();
-            let len0 = vec0.len();
+            let LockHandler { name: name0 } = handler;
+            let vec1 = name0;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
 
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "lock")]
             extern "C" {
                 #[link_name = "unlock"]
+                fn wit_import(_: *mut u8, _: usize);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize) {
+                unreachable!()
+            }
+            wit_import(ptr1.cast_mut(), len1);
+        }
+    }
+}
+
+#[allow(dead_code, clippy::all)]
+pub mod channel {
+    #[used]
+    #[doc(hidden)]
+    #[cfg(target_arch = "wasm32")]
+    static __FORCE_SECTION_REF: fn() = super::__link_custom_section_describing_imports;
+    use super::_rt;
+    #[derive(Clone)]
+    pub struct ChannelHandler {
+        pub name: _rt::String,
+    }
+    impl ::core::fmt::Debug for ChannelHandler {
+        fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+            f.debug_struct("ChannelHandler")
+                .field("name", &self.name)
+                .finish()
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn create_channel_handler(name: &str) -> ChannelHandler {
+        unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+            let vec0 = name;
+            let ptr0 = vec0.as_ptr().cast::<u8>();
+            let len0 = vec0.len();
+            let ptr1 = ret_area.0.as_mut_ptr().cast::<u8>();
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "channel")]
+            extern "C" {
+                #[link_name = "create-channel-handler"]
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
+                unreachable!()
+            }
+            wit_import(ptr0.cast_mut(), len0, ptr1);
+            let l2 = *ptr1.add(0).cast::<*mut u8>();
+            let l3 = *ptr1.add(4).cast::<usize>();
+            let len4 = l3;
+            let bytes4 = _rt::Vec::from_raw_parts(l2.cast(), len4, len4);
+            ChannelHandler {
+                name: _rt::string_lift(bytes4),
+            }
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn drop_channel_handler(handler: &ChannelHandler) {
+        unsafe {
+            let ChannelHandler { name: name0 } = handler;
+            let vec1 = name0;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
+
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "channel")]
+            extern "C" {
+                #[link_name = "drop-channel-handler"]
+                fn wit_import(_: *mut u8, _: usize);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize) {
+                unreachable!()
+            }
+            wit_import(ptr1.cast_mut(), len1);
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn send(handler: &ChannelHandler, message: &str) {
+        unsafe {
+            let ChannelHandler { name: name0 } = handler;
+            let vec1 = name0;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
+            let vec2 = message;
+            let ptr2 = vec2.as_ptr().cast::<u8>();
+            let len2 = vec2.len();
+
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "channel")]
+            extern "C" {
+                #[link_name = "send"]
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize) {
+                unreachable!()
+            }
+            wit_import(ptr1.cast_mut(), len1, ptr2.cast_mut(), len2);
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn recv(handler: &ChannelHandler) -> _rt::String {
+        unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+            let ChannelHandler { name: name0 } = handler;
+            let vec1 = name0;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
+            let ptr2 = ret_area.0.as_mut_ptr().cast::<u8>();
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "channel")]
+            extern "C" {
+                #[link_name = "recv"]
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
+                unreachable!()
+            }
+            wit_import(ptr1.cast_mut(), len1, ptr2);
+            let l3 = *ptr2.add(0).cast::<*mut u8>();
+            let l4 = *ptr2.add(4).cast::<usize>();
+            let len5 = l4;
+            let bytes5 = _rt::Vec::from_raw_parts(l3.cast(), len5, len5);
+            _rt::string_lift(bytes5)
+        }
+    }
+}
+
+#[allow(dead_code, clippy::all)]
+pub mod task {
+    #[used]
+    #[doc(hidden)]
+    #[cfg(target_arch = "wasm32")]
+    static __FORCE_SECTION_REF: fn() = super::__link_custom_section_describing_imports;
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn spawn(payload: &str) {
+        unsafe {
+            let vec0 = payload;
+            let ptr0 = vec0.as_ptr().cast::<u8>();
+            let len0 = vec0.len();
+
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "task")]
+            extern "C" {
+                #[link_name = "spawn"]
                 fn wit_import(_: *mut u8, _: usize);
             }
 
@@ -8144,43 +8368,73 @@ pub mod exports {
         use super::super::_rt;
         #[doc(hidden)]
         #[allow(non_snake_case)]
-        pub unsafe fn _export_before_start_cabi<T: Guest>() {
+        pub unsafe fn _export_on_start_cabi<T: Guest>() {
             #[cfg(target_arch = "wasm32")]
             _rt::run_ctors_once();
-            T::before_start();
-        }
-        #[doc(hidden)]
-        #[allow(non_snake_case)]
-        pub unsafe fn _export_on_started_cabi<T: Guest>() {
-            #[cfg(target_arch = "wasm32")]
-            _rt::run_ctors_once();
-            T::on_started();
+            T::on_start();
         }
         pub trait Guest {
-            fn before_start();
-            fn on_started();
+            fn on_start();
         }
         #[doc(hidden)]
 
         macro_rules! __export_lifecycle_cabi{
   ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
 
-    #[export_name = "lifecycle#before-start"]
-    unsafe extern "C" fn export_before_start() {
-      $($path_to_types)*::_export_before_start_cabi::<$ty>()
-    }
-    #[export_name = "lifecycle#on-started"]
-    unsafe extern "C" fn export_on_started() {
-      $($path_to_types)*::_export_on_started_cabi::<$ty>()
+    #[export_name = "lifecycle#on-start"]
+    unsafe extern "C" fn export_on_start() {
+      $($path_to_types)*::_export_on_start_cabi::<$ty>()
     }
   };);
 }
         #[doc(hidden)]
         pub(crate) use __export_lifecycle_cabi;
     }
+
+    #[allow(dead_code, clippy::all)]
+    pub mod task {
+        #[used]
+        #[doc(hidden)]
+        #[cfg(target_arch = "wasm32")]
+        static __FORCE_SECTION_REF: fn() = super::super::__link_custom_section_describing_imports;
+        use super::super::_rt;
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        pub unsafe fn _export_on_spawn_cabi<T: Guest>(arg0: *mut u8, arg1: usize) {
+            #[cfg(target_arch = "wasm32")]
+            _rt::run_ctors_once();
+            let len0 = arg1;
+            let bytes0 = _rt::Vec::from_raw_parts(arg0.cast(), len0, len0);
+            T::on_spawn(_rt::string_lift(bytes0));
+        }
+        pub trait Guest {
+            fn on_spawn(payload: _rt::String);
+        }
+        #[doc(hidden)]
+
+        macro_rules! __export_task_cabi{
+  ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
+
+    #[export_name = "task#on-spawn"]
+    unsafe extern "C" fn export_on_spawn(arg0: *mut u8,arg1: usize,) {
+      $($path_to_types)*::_export_on_spawn_cabi::<$ty>(arg0, arg1)
+    }
+  };);
+}
+        #[doc(hidden)]
+        pub(crate) use __export_task_cabi;
+    }
 }
 mod _rt {
+    pub use alloc_crate::string::String;
     pub use alloc_crate::vec::Vec;
+    pub unsafe fn string_lift(bytes: Vec<u8>) -> String {
+        if cfg!(debug_assertions) {
+            String::from_utf8(bytes).unwrap()
+        } else {
+            String::from_utf8_unchecked(bytes)
+        }
+    }
 
     pub fn as_i64<T: AsI64>(t: T) -> i64 {
         t.as_i64()
@@ -8302,14 +8556,6 @@ mod _rt {
                     other => T::drop(other),
                 }
             }
-        }
-    }
-    pub use alloc_crate::string::String;
-    pub unsafe fn string_lift(bytes: Vec<u8>) -> String {
-        if cfg!(debug_assertions) {
-            String::from_utf8(bytes).unwrap()
-        } else {
-            String::from_utf8_unchecked(bytes)
         }
     }
     pub unsafe fn bool_lift(val: u8) -> bool {
@@ -8439,6 +8685,7 @@ macro_rules! __export_plat_world_impl {
   ($ty:ident) => (self::export!($ty with_types_in self););
   ($ty:ident with_types_in $($path_to_types_root:tt)*) => (
   $($path_to_types_root)*::exports::lifecycle::__export_lifecycle_cabi!($ty with_types_in $($path_to_types_root)*::exports::lifecycle);
+  $($path_to_types_root)*::exports::task::__export_task_cabi!($ty with_types_in $($path_to_types_root)*::exports::task);
   $($path_to_types_root)*::exports::wasi::http::incoming_handler::__export_wasi_http_incoming_handler_0_2_0_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::http::incoming_handler);
   )
 }
@@ -8448,20 +8695,27 @@ pub(crate) use __export_plat_world_impl as export;
 #[cfg(target_arch = "wasm32")]
 #[link_section = "component-type:wit-bindgen:0.25.0:plat-world:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 7125] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xd46\x01A\x02\x01A'\x01\
-B\x03\x01@\x01\x02ids\x01\0\x04\0\x04lock\x01\0\x04\0\x06unlock\x01\0\x03\0\x04l\
-ock\x05\0\x01B\x05\x01p}\x01@\x01\x03lenw\0\0\x04\0\x10get-random-bytes\x01\x01\x01\
-@\0\0w\x04\0\x0eget-random-u64\x01\x02\x03\x01\x18wasi:random/random@0.2.0\x05\x01\
-\x01B\x04\x04\0\x05error\x03\x01\x01h\0\x01@\x01\x04self\x01\0s\x04\0\x1d[method\
-]error.to-debug-string\x01\x02\x03\x01\x13wasi:io/error@0.2.0\x05\x02\x01B\x0a\x04\
-\0\x08pollable\x03\x01\x01h\0\x01@\x01\x04self\x01\0\x7f\x04\0\x16[method]pollab\
-le.ready\x01\x02\x01@\x01\x04self\x01\x01\0\x04\0\x16[method]pollable.block\x01\x03\
-\x01p\x01\x01py\x01@\x01\x02in\x04\0\x05\x04\0\x04poll\x01\x06\x03\x01\x12wasi:i\
-o/poll@0.2.0\x05\x03\x02\x03\0\x02\x05error\x02\x03\0\x03\x08pollable\x01B(\x02\x03\
-\x02\x01\x04\x04\0\x05error\x03\0\0\x02\x03\x02\x01\x05\x04\0\x08pollable\x03\0\x02\
-\x01i\x01\x01q\x02\x15last-operation-failed\x01\x04\0\x06closed\0\0\x04\0\x0cstr\
-eam-error\x03\0\x05\x04\0\x0cinput-stream\x03\x01\x04\0\x0doutput-stream\x03\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 7447] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x969\x01A\x02\x01A-\x01\
+B\x08\x01r\x01\x04names\x04\0\x0clock-handler\x03\0\0\x01@\x01\x04names\0\x01\x04\
+\0\x13create-lock-handler\x01\x02\x01@\x01\x07handler\x01\x01\0\x04\0\x11drop-lo\
+ck-handler\x01\x03\x04\0\x04lock\x01\x03\x04\0\x06unlock\x01\x03\x03\0\x04lock\x05\
+\0\x01B\x0a\x01r\x01\x04names\x04\0\x0fchannel-handler\x03\0\0\x01@\x01\x04names\
+\0\x01\x04\0\x16create-channel-handler\x01\x02\x01@\x01\x07handler\x01\x01\0\x04\
+\0\x14drop-channel-handler\x01\x03\x01@\x02\x07handler\x01\x07messages\x01\0\x04\
+\0\x04send\x01\x04\x01@\x01\x07handler\x01\0s\x04\0\x04recv\x01\x05\x03\0\x07cha\
+nnel\x05\x01\x01B\x02\x01@\x01\x07payloads\x01\0\x04\0\x05spawn\x01\0\x03\0\x04t\
+ask\x05\x02\x01B\x05\x01p}\x01@\x01\x03lenw\0\0\x04\0\x10get-random-bytes\x01\x01\
+\x01@\0\0w\x04\0\x0eget-random-u64\x01\x02\x03\x01\x18wasi:random/random@0.2.0\x05\
+\x03\x01B\x04\x04\0\x05error\x03\x01\x01h\0\x01@\x01\x04self\x01\0s\x04\0\x1d[me\
+thod]error.to-debug-string\x01\x02\x03\x01\x13wasi:io/error@0.2.0\x05\x04\x01B\x0a\
+\x04\0\x08pollable\x03\x01\x01h\0\x01@\x01\x04self\x01\0\x7f\x04\0\x16[method]po\
+llable.ready\x01\x02\x01@\x01\x04self\x01\x01\0\x04\0\x16[method]pollable.block\x01\
+\x03\x01p\x01\x01py\x01@\x01\x02in\x04\0\x05\x04\0\x04poll\x01\x06\x03\x01\x12wa\
+si:io/poll@0.2.0\x05\x05\x02\x03\0\x04\x05error\x02\x03\0\x05\x08pollable\x01B(\x02\
+\x03\x02\x01\x06\x04\0\x05error\x03\0\0\x02\x03\x02\x01\x07\x04\0\x08pollable\x03\
+\0\x02\x01i\x01\x01q\x02\x15last-operation-failed\x01\x04\0\x06closed\0\0\x04\0\x0c\
+stream-error\x03\0\x05\x04\0\x0cinput-stream\x03\x01\x04\0\x0doutput-stream\x03\x01\
 \x01h\x07\x01p}\x01j\x01\x0a\x01\x06\x01@\x02\x04self\x09\x03lenw\0\x0b\x04\0\x19\
 [method]input-stream.read\x01\x0c\x04\0\"[method]input-stream.blocking-read\x01\x0c\
 \x01j\x01w\x01\x06\x01@\x02\x04self\x09\x03lenw\0\x0d\x04\0\x19[method]input-str\
@@ -8476,21 +8730,21 @@ utput-stream.subscribe\x01\x16\x01@\x02\x04self\x11\x03lenw\0\x13\x04\0\"[method
 ]output-stream.write-zeroes\x01\x17\x04\05[method]output-stream.blocking-write-z\
 eroes-and-flush\x01\x17\x01@\x03\x04self\x11\x03src\x09\x03lenw\0\x0d\x04\0\x1c[\
 method]output-stream.splice\x01\x18\x04\0%[method]output-stream.blocking-splice\x01\
-\x18\x03\x01\x15wasi:io/streams@0.2.0\x05\x06\x02\x03\0\x04\x0doutput-stream\x01\
-B\x05\x02\x03\x02\x01\x07\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\
-\0\x0aget-stdout\x01\x03\x03\x01\x15wasi:cli/stdout@0.2.0\x05\x08\x01B\x05\x02\x03\
-\x02\x01\x07\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\0\x0aget-s\
-tderr\x01\x03\x03\x01\x15wasi:cli/stderr@0.2.0\x05\x09\x02\x03\0\x04\x0cinput-st\
-ream\x01B\x05\x02\x03\x02\x01\x0a\x04\0\x0cinput-stream\x03\0\0\x01i\x01\x01@\0\0\
-\x02\x04\0\x09get-stdin\x01\x03\x03\x01\x14wasi:cli/stdin@0.2.0\x05\x0b\x01B\x0f\
-\x02\x03\x02\x01\x05\x04\0\x08pollable\x03\0\0\x01w\x04\0\x07instant\x03\0\x02\x01\
+\x18\x03\x01\x15wasi:io/streams@0.2.0\x05\x08\x02\x03\0\x06\x0doutput-stream\x01\
+B\x05\x02\x03\x02\x01\x09\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\
+\0\x0aget-stdout\x01\x03\x03\x01\x15wasi:cli/stdout@0.2.0\x05\x0a\x01B\x05\x02\x03\
+\x02\x01\x09\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\0\x0aget-s\
+tderr\x01\x03\x03\x01\x15wasi:cli/stderr@0.2.0\x05\x0b\x02\x03\0\x06\x0cinput-st\
+ream\x01B\x05\x02\x03\x02\x01\x0c\x04\0\x0cinput-stream\x03\0\0\x01i\x01\x01@\0\0\
+\x02\x04\0\x09get-stdin\x01\x03\x03\x01\x14wasi:cli/stdin@0.2.0\x05\x0d\x01B\x0f\
+\x02\x03\x02\x01\x07\x04\0\x08pollable\x03\0\0\x01w\x04\0\x07instant\x03\0\x02\x01\
 w\x04\0\x08duration\x03\0\x04\x01@\0\0\x03\x04\0\x03now\x01\x06\x01@\0\0\x05\x04\
 \0\x0aresolution\x01\x07\x01i\x01\x01@\x01\x04when\x03\0\x08\x04\0\x11subscribe-\
 instant\x01\x09\x01@\x01\x04when\x05\0\x08\x04\0\x12subscribe-duration\x01\x0a\x03\
-\x01!wasi:clocks/monotonic-clock@0.2.0\x05\x0c\x02\x03\0\x08\x08duration\x01B\xc0\
-\x01\x02\x03\x02\x01\x0d\x04\0\x08duration\x03\0\0\x02\x03\x02\x01\x0a\x04\0\x0c\
-input-stream\x03\0\x02\x02\x03\x02\x01\x07\x04\0\x0doutput-stream\x03\0\x04\x02\x03\
-\x02\x01\x04\x04\0\x08io-error\x03\0\x06\x02\x03\x02\x01\x05\x04\0\x08pollable\x03\
+\x01!wasi:clocks/monotonic-clock@0.2.0\x05\x0e\x02\x03\0\x0a\x08duration\x01B\xc0\
+\x01\x02\x03\x02\x01\x0f\x04\0\x08duration\x03\0\0\x02\x03\x02\x01\x0c\x04\0\x0c\
+input-stream\x03\0\x02\x02\x03\x02\x01\x09\x04\0\x0doutput-stream\x03\0\x04\x02\x03\
+\x02\x01\x06\x04\0\x08io-error\x03\0\x06\x02\x03\x02\x01\x07\x04\0\x08pollable\x03\
 \0\x08\x01q\x0a\x03get\0\0\x04head\0\0\x04post\0\0\x03put\0\0\x06delete\0\0\x07c\
 onnect\0\0\x07options\0\0\x05trace\0\0\x05patch\0\0\x05other\x01s\0\x04\0\x06met\
 hod\x03\0\x0a\x01q\x03\x04HTTP\0\0\x05HTTPS\0\0\x05other\x01s\0\x04\0\x06scheme\x03\
@@ -8575,24 +8829,25 @@ d]outgoing-response.body\x01|\x01h/\x01i\x05\x01j\x01\xfe\0\0\x01@\x01\x04self\x
 g-response.subscribe\x01\x84\x01\x01i+\x01j\x01\x85\x01\x01\x1b\x01j\x01\x86\x01\
 \0\x01k\x87\x01\x01@\x01\x04self\x83\x01\0\x88\x01\x04\0$[method]future-incoming\
 -response.get\x01\x89\x01\x01h\x07\x01k\x1b\x01@\x01\x03err\x8a\x01\0\x8b\x01\x04\
-\0\x0fhttp-error-code\x01\x8c\x01\x03\x01\x15wasi:http/types@0.2.0\x05\x0e\x02\x03\
-\0\x09\x10outgoing-request\x02\x03\0\x09\x0frequest-options\x02\x03\0\x09\x18fut\
-ure-incoming-response\x02\x03\0\x09\x0aerror-code\x01B\x0f\x02\x03\x02\x01\x0f\x04\
-\0\x10outgoing-request\x03\0\0\x02\x03\x02\x01\x10\x04\0\x0frequest-options\x03\0\
-\x02\x02\x03\x02\x01\x11\x04\0\x18future-incoming-response\x03\0\x04\x02\x03\x02\
-\x01\x12\x04\0\x0aerror-code\x03\0\x06\x01i\x01\x01i\x03\x01k\x09\x01i\x05\x01j\x01\
+\0\x0fhttp-error-code\x01\x8c\x01\x03\x01\x15wasi:http/types@0.2.0\x05\x10\x02\x03\
+\0\x0b\x10outgoing-request\x02\x03\0\x0b\x0frequest-options\x02\x03\0\x0b\x18fut\
+ure-incoming-response\x02\x03\0\x0b\x0aerror-code\x01B\x0f\x02\x03\x02\x01\x11\x04\
+\0\x10outgoing-request\x03\0\0\x02\x03\x02\x01\x12\x04\0\x0frequest-options\x03\0\
+\x02\x02\x03\x02\x01\x13\x04\0\x18future-incoming-response\x03\0\x04\x02\x03\x02\
+\x01\x14\x04\0\x0aerror-code\x03\0\x06\x01i\x01\x01i\x03\x01k\x09\x01i\x05\x01j\x01\
 \x0b\x01\x07\x01@\x02\x07request\x08\x07options\x0a\0\x0c\x04\0\x06handle\x01\x0d\
-\x03\x01\x20wasi:http/outgoing-handler@0.2.0\x05\x13\x01B\x05\x01r\x02\x07second\
+\x03\x01\x20wasi:http/outgoing-handler@0.2.0\x05\x15\x01B\x05\x01r\x02\x07second\
 sw\x0bnanosecondsy\x04\0\x08datetime\x03\0\0\x01@\0\0\x01\x04\0\x03now\x01\x02\x04\
-\0\x0aresolution\x01\x02\x03\x01\x1cwasi:clocks/wall-clock@0.2.0\x05\x14\x01B\x03\
-\x01@\0\x01\0\x04\0\x0cbefore-start\x01\0\x04\0\x0aon-started\x01\0\x04\0\x09lif\
-ecycle\x05\x15\x02\x03\0\x09\x10incoming-request\x02\x03\0\x09\x11response-outpa\
-ram\x01B\x08\x02\x03\x02\x01\x16\x04\0\x10incoming-request\x03\0\0\x02\x03\x02\x01\
-\x17\x04\0\x11response-outparam\x03\0\x02\x01i\x01\x01i\x03\x01@\x02\x07request\x04\
-\x0cresponse-out\x05\x01\0\x04\0\x06handle\x01\x06\x04\x01\x20wasi:http/incoming\
--handler@0.2.0\x05\x18\x04\x01\x16plat:plugin/plat-world\x04\0\x0b\x10\x01\0\x0a\
-plat-world\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070\
-.208.1\x10wit-bindgen-rust\x060.25.0";
+\0\x0aresolution\x01\x02\x03\x01\x1cwasi:clocks/wall-clock@0.2.0\x05\x16\x01B\x02\
+\x01@\0\x01\0\x04\0\x08on-start\x01\0\x04\0\x09lifecycle\x05\x17\x01B\x02\x01@\x01\
+\x07payloads\x01\0\x04\0\x08on-spawn\x01\0\x04\0\x04task\x05\x18\x02\x03\0\x0b\x10\
+incoming-request\x02\x03\0\x0b\x11response-outparam\x01B\x08\x02\x03\x02\x01\x19\
+\x04\0\x10incoming-request\x03\0\0\x02\x03\x02\x01\x1a\x04\0\x11response-outpara\
+m\x03\0\x02\x01i\x01\x01i\x03\x01@\x02\x07request\x04\x0cresponse-out\x05\x01\0\x04\
+\0\x06handle\x01\x06\x04\x01\x20wasi:http/incoming-handler@0.2.0\x05\x1b\x04\x01\
+\x16plat:plugin/plat-world\x04\0\x0b\x10\x01\0\x0aplat-world\x03\0\0\0G\x09produ\
+cers\x01\x0cprocessed-by\x02\x0dwit-component\x070.208.1\x10wit-bindgen-rust\x06\
+0.25.0";
 
 #[inline(never)]
 #[doc(hidden)]

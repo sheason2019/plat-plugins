@@ -85,7 +85,7 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
 }
 
 impl bindings::exports::lifecycle::Guest for Component {
-    fn before_start() {
+    fn on_start() {
         println!("开始执行身份插件逻辑");
 
         println!("尝试从守护进程获取上下文信息");
@@ -112,9 +112,11 @@ impl bindings::exports::lifecycle::Guest for Component {
 
         println!("身份插件初始化逻辑执行完毕");
     }
+}
 
-    fn on_started() {
-        println!("on started life cycle");
+impl bindings::exports::task::Guest for Component {
+    fn on_spawn(payload: String) {
+        todo!()
     }
 }
 

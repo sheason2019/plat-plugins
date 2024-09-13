@@ -38,11 +38,11 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
 }
 
 impl bindings::exports::lifecycle::Guest for Component {
-    fn before_start() {
-        todo!()
-    }
+    fn on_start() {}
+}
 
-    fn on_started() {
+impl bindings::exports::task::Guest for Component {
+    fn on_spawn(payload: String) {
         todo!()
     }
 }

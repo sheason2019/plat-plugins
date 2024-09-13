@@ -19,7 +19,7 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
 }
 
 impl bindings::exports::lifecycle::Guest for Component {
-    fn before_start() {
+    fn on_start() {
         let alice = models::key_pair::X25519KeyPair::generate();
         println!("alice x25519 keypair {:?}", alice);
 
@@ -69,9 +69,11 @@ impl bindings::exports::lifecycle::Guest for Component {
             std::str::from_utf8(decrypt_text.as_ref()).unwrap()
         );
     }
+}
 
-    fn on_started() {
-        println!("on started");
+impl bindings::exports::task::Guest for Component {
+    fn on_spawn(payload: String) {
+        todo!()
     }
 }
 
