@@ -1,6 +1,15 @@
 package plat:plugin;
 
-world identity-world {
+world plat-world {
     include wasi:http/proxy@0.2.0;
-    export on-init: func();
+    
+    export lifecycle: interface {
+        before-start: func();
+        on-started: func();
+    }
+
+    import lock: interface {
+        lock: func(id: string);
+        unlock: func(id: string);
+    }
 }

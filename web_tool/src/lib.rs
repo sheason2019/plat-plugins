@@ -2,8 +2,6 @@
 mod bindings;
 mod router;
 
-use bindings::Guest;
-
 struct Component;
 
 impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
@@ -15,8 +13,12 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
     }
 }
 
-impl Guest for Component {
-    fn on_init() {
+impl bindings::exports::lifecycle::Guest for Component {
+    fn before_start() {
+        todo!()
+    }
+
+    fn on_started() {
         todo!()
     }
 }

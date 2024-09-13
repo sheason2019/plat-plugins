@@ -4,10 +4,7 @@ mod models;
 mod router;
 
 use base64::Engine;
-use bindings::{
-    exports::wasi::http::incoming_handler::{IncomingRequest, ResponseOutparam},
-    Guest,
-};
+use bindings::exports::wasi::http::incoming_handler::{IncomingRequest, ResponseOutparam};
 use chacha20poly1305::{
     aead::{generic_array::GenericArray, Aead},
     AeadCore, ChaCha20Poly1305, KeyInit,
@@ -21,8 +18,8 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
     }
 }
 
-impl Guest for Component {
-    fn on_init() {
+impl bindings::exports::lifecycle::Guest for Component {
+    fn before_start() {
         let alice = models::key_pair::X25519KeyPair::generate();
         println!("alice x25519 keypair {:?}", alice);
 
@@ -71,6 +68,10 @@ impl Guest for Component {
             "decrypt text is: {}",
             std::str::from_utf8(decrypt_text.as_ref()).unwrap()
         );
+    }
+
+    fn on_started() {
+        println!("on started");
     }
 }
 
