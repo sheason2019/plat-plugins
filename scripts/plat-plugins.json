@@ -1,0 +1,3 @@
+{
+  "plugins": ["../identity/plugin", "../message/plugin"]
+}

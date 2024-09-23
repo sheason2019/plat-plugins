@@ -1,7 +1,6 @@
 #[allow(warnings)]
 mod bindings;
 mod models;
-mod router;
 
 use base64::Engine;
 use bindings::exports::wasi::http::incoming_handler::{IncomingRequest, ResponseOutparam};

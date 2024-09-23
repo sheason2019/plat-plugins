@@ -5,7 +5,6 @@ use express::router::Router;
 #[allow(warnings)]
 mod bindings;
 mod express;
-mod router;
 
 struct Component;
 
