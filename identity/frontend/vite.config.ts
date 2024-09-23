@@ -7,10 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       "/plugin.json": {
-        target: "http://127.0.0.1:8090",
+        target: "http://127.0.0.1:9001",
       },
       "/api": {
-        target: "http://127.0.0.1:8090",
+        target: "http://127.0.0.1:9001",
       },
     },
   },

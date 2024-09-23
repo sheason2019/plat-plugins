@@ -9,10 +9,3 @@ export interface IdentityHost {
   identity_data_address: string;
   identity_page_address: string;
 }
-
-export interface DaemonContext {
-  daemon: {
-    public_key: string;
-  };
-  [T: string]: unknown;
-}

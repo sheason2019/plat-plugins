@@ -1,17 +1,24 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import IndexPage from "./routes/page";
 import { NextUIProvider } from "@nextui-org/react";
-import EditPage from "./routes/edit/page";
 import { Toaster } from "sonner";
+import InitialPage from "./routes/intial/page";
+import IndexLayout from "./routes/layout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <IndexPage />,
+    element: <IndexLayout />,
+    children: [
+      {
+        path: "",
+        element: <IndexPage />,
+      },
+    ],
   },
   {
-    path: "/edit",
-    element: <EditPage />,
+    path: "/initial",
+    element: <InitialPage />,
   },
 ]);
 

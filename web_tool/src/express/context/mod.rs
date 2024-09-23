@@ -71,4 +71,8 @@ impl Context {
         self.response.status = 200;
         self.response.file_body(file_path);
     }
+
+    pub fn body(&self) -> &Vec<u8> {
+        self.request.body()
+    }
 }
