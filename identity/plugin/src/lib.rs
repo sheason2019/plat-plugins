@@ -75,11 +75,15 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
 }
 
 impl bindings::exports::lifecycle::Guest for Component {
-    fn on_start() {}
+    fn on_start() -> Result<(), String> {
+        Ok(())
+    }
 }
 
 impl bindings::exports::task::Guest for Component {
-    fn on_spawn(_payload: String) {}
+    fn on_spawn(_payload: String) -> Result<(), String> {
+        Ok(())
+    }
 }
 
 bindings::export!(Component with_types_in bindings);

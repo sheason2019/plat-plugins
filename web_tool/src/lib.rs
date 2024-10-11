@@ -37,11 +37,13 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
 }
 
 impl bindings::exports::lifecycle::Guest for Component {
-    fn on_start() {}
+    fn on_start() -> Result<(), String> {
+        Ok(())
+    }
 }
 
 impl bindings::exports::task::Guest for Component {
-    fn on_spawn(payload: String) {
+    fn on_spawn(payload: String) -> Result<(), String> {
         todo!()
     }
 }

@@ -8050,11 +8050,11 @@ pub mod lock {
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn create_lock_handler(name: &str) -> LockHandler {
+    pub fn create_lock_handler(name: &str) -> Result<LockHandler, _rt::String> {
         unsafe {
             #[repr(align(4))]
-            struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
-            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let vec0 = name;
             let ptr0 = vec0.as_ptr().cast::<u8>();
             let len0 = vec0.len();
@@ -8071,79 +8071,166 @@ pub mod lock {
                 unreachable!()
             }
             wit_import(ptr0.cast_mut(), len0, ptr1);
-            let l2 = *ptr1.add(0).cast::<*mut u8>();
-            let l3 = *ptr1.add(4).cast::<usize>();
-            let len4 = l3;
-            let bytes4 = _rt::Vec::from_raw_parts(l2.cast(), len4, len4);
-            LockHandler {
-                name: _rt::string_lift(bytes4),
+            let l2 = i32::from(*ptr1.add(0).cast::<u8>());
+            match l2 {
+                0 => {
+                    let e = {
+                        let l3 = *ptr1.add(4).cast::<*mut u8>();
+                        let l4 = *ptr1.add(8).cast::<usize>();
+                        let len5 = l4;
+                        let bytes5 = _rt::Vec::from_raw_parts(l3.cast(), len5, len5);
+
+                        LockHandler {
+                            name: _rt::string_lift(bytes5),
+                        }
+                    };
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l6 = *ptr1.add(4).cast::<*mut u8>();
+                        let l7 = *ptr1.add(8).cast::<usize>();
+                        let len8 = l7;
+                        let bytes8 = _rt::Vec::from_raw_parts(l6.cast(), len8, len8);
+
+                        _rt::string_lift(bytes8)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
             }
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn drop_lock_handler(handler: &LockHandler) {
+    pub fn drop_lock_handler(handler: &LockHandler) -> Result<(), _rt::String> {
         unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let LockHandler { name: name0 } = handler;
             let vec1 = name0;
             let ptr1 = vec1.as_ptr().cast::<u8>();
             let len1 = vec1.len();
-
+            let ptr2 = ret_area.0.as_mut_ptr().cast::<u8>();
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "lock")]
             extern "C" {
                 #[link_name = "drop-lock-handler"]
-                fn wit_import(_: *mut u8, _: usize);
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            fn wit_import(_: *mut u8, _: usize) {
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
                 unreachable!()
             }
-            wit_import(ptr1.cast_mut(), len1);
+            wit_import(ptr1.cast_mut(), len1, ptr2);
+            let l3 = i32::from(*ptr2.add(0).cast::<u8>());
+            match l3 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l4 = *ptr2.add(4).cast::<*mut u8>();
+                        let l5 = *ptr2.add(8).cast::<usize>();
+                        let len6 = l5;
+                        let bytes6 = _rt::Vec::from_raw_parts(l4.cast(), len6, len6);
+
+                        _rt::string_lift(bytes6)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn lock(handler: &LockHandler) {
+    pub fn lock(handler: &LockHandler) -> Result<(), _rt::String> {
         unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let LockHandler { name: name0 } = handler;
             let vec1 = name0;
             let ptr1 = vec1.as_ptr().cast::<u8>();
             let len1 = vec1.len();
-
+            let ptr2 = ret_area.0.as_mut_ptr().cast::<u8>();
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "lock")]
             extern "C" {
                 #[link_name = "lock"]
-                fn wit_import(_: *mut u8, _: usize);
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            fn wit_import(_: *mut u8, _: usize) {
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
                 unreachable!()
             }
-            wit_import(ptr1.cast_mut(), len1);
+            wit_import(ptr1.cast_mut(), len1, ptr2);
+            let l3 = i32::from(*ptr2.add(0).cast::<u8>());
+            match l3 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l4 = *ptr2.add(4).cast::<*mut u8>();
+                        let l5 = *ptr2.add(8).cast::<usize>();
+                        let len6 = l5;
+                        let bytes6 = _rt::Vec::from_raw_parts(l4.cast(), len6, len6);
+
+                        _rt::string_lift(bytes6)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn unlock(handler: &LockHandler) {
+    pub fn unlock(handler: &LockHandler) -> Result<(), _rt::String> {
         unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let LockHandler { name: name0 } = handler;
             let vec1 = name0;
             let ptr1 = vec1.as_ptr().cast::<u8>();
             let len1 = vec1.len();
-
+            let ptr2 = ret_area.0.as_mut_ptr().cast::<u8>();
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "lock")]
             extern "C" {
                 #[link_name = "unlock"]
-                fn wit_import(_: *mut u8, _: usize);
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            fn wit_import(_: *mut u8, _: usize) {
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
                 unreachable!()
             }
-            wit_import(ptr1.cast_mut(), len1);
+            wit_import(ptr1.cast_mut(), len1, ptr2);
+            let l3 = i32::from(*ptr2.add(0).cast::<u8>());
+            match l3 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l4 = *ptr2.add(4).cast::<*mut u8>();
+                        let l5 = *ptr2.add(8).cast::<usize>();
+                        let len6 = l5;
+                        let bytes6 = _rt::Vec::from_raw_parts(l4.cast(), len6, len6);
+
+                        _rt::string_lift(bytes6)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
 }
@@ -8167,11 +8254,11 @@ pub mod channel {
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn create_channel_handler(name: &str) -> ChannelHandler {
+    pub fn create_channel_handler(name: &str) -> Result<ChannelHandler, _rt::String> {
         unsafe {
             #[repr(align(4))]
-            struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
-            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let vec0 = name;
             let ptr0 = vec0.as_ptr().cast::<u8>();
             let len0 = vec0.len();
@@ -8188,40 +8275,86 @@ pub mod channel {
                 unreachable!()
             }
             wit_import(ptr0.cast_mut(), len0, ptr1);
-            let l2 = *ptr1.add(0).cast::<*mut u8>();
-            let l3 = *ptr1.add(4).cast::<usize>();
-            let len4 = l3;
-            let bytes4 = _rt::Vec::from_raw_parts(l2.cast(), len4, len4);
-            ChannelHandler {
-                name: _rt::string_lift(bytes4),
+            let l2 = i32::from(*ptr1.add(0).cast::<u8>());
+            match l2 {
+                0 => {
+                    let e = {
+                        let l3 = *ptr1.add(4).cast::<*mut u8>();
+                        let l4 = *ptr1.add(8).cast::<usize>();
+                        let len5 = l4;
+                        let bytes5 = _rt::Vec::from_raw_parts(l3.cast(), len5, len5);
+
+                        ChannelHandler {
+                            name: _rt::string_lift(bytes5),
+                        }
+                    };
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l6 = *ptr1.add(4).cast::<*mut u8>();
+                        let l7 = *ptr1.add(8).cast::<usize>();
+                        let len8 = l7;
+                        let bytes8 = _rt::Vec::from_raw_parts(l6.cast(), len8, len8);
+
+                        _rt::string_lift(bytes8)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
             }
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn drop_channel_handler(handler: &ChannelHandler) {
+    pub fn drop_channel_handler(handler: &ChannelHandler) -> Result<(), _rt::String> {
         unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let ChannelHandler { name: name0 } = handler;
             let vec1 = name0;
             let ptr1 = vec1.as_ptr().cast::<u8>();
             let len1 = vec1.len();
-
+            let ptr2 = ret_area.0.as_mut_ptr().cast::<u8>();
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "channel")]
             extern "C" {
                 #[link_name = "drop-channel-handler"]
-                fn wit_import(_: *mut u8, _: usize);
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            fn wit_import(_: *mut u8, _: usize) {
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
                 unreachable!()
             }
-            wit_import(ptr1.cast_mut(), len1);
+            wit_import(ptr1.cast_mut(), len1, ptr2);
+            let l3 = i32::from(*ptr2.add(0).cast::<u8>());
+            match l3 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l4 = *ptr2.add(4).cast::<*mut u8>();
+                        let l5 = *ptr2.add(8).cast::<usize>();
+                        let len6 = l5;
+                        let bytes6 = _rt::Vec::from_raw_parts(l4.cast(), len6, len6);
+
+                        _rt::string_lift(bytes6)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn send(handler: &ChannelHandler, message: &str) {
+    pub fn send(handler: &ChannelHandler, message: &str) -> Result<(), _rt::String> {
         unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let ChannelHandler { name: name0 } = handler;
             let vec1 = name0;
             let ptr1 = vec1.as_ptr().cast::<u8>();
@@ -8229,27 +8362,46 @@ pub mod channel {
             let vec2 = message;
             let ptr2 = vec2.as_ptr().cast::<u8>();
             let len2 = vec2.len();
-
+            let ptr3 = ret_area.0.as_mut_ptr().cast::<u8>();
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "channel")]
             extern "C" {
                 #[link_name = "send"]
-                fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize);
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize, _: *mut u8);
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize) {
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize, _: *mut u8) {
                 unreachable!()
             }
-            wit_import(ptr1.cast_mut(), len1, ptr2.cast_mut(), len2);
+            wit_import(ptr1.cast_mut(), len1, ptr2.cast_mut(), len2, ptr3);
+            let l4 = i32::from(*ptr3.add(0).cast::<u8>());
+            match l4 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l5 = *ptr3.add(4).cast::<*mut u8>();
+                        let l6 = *ptr3.add(8).cast::<usize>();
+                        let len7 = l6;
+                        let bytes7 = _rt::Vec::from_raw_parts(l5.cast(), len7, len7);
+
+                        _rt::string_lift(bytes7)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
     #[allow(unused_unsafe, clippy::all)]
-    pub fn recv(handler: &ChannelHandler) -> _rt::String {
+    pub fn recv(handler: &ChannelHandler) -> Result<(), _rt::String> {
         unsafe {
             #[repr(align(4))]
-            struct RetArea([::core::mem::MaybeUninit<u8>; 8]);
-            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 8]);
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let ChannelHandler { name: name0 } = handler;
             let vec1 = name0;
             let ptr1 = vec1.as_ptr().cast::<u8>();
@@ -8267,11 +8419,25 @@ pub mod channel {
                 unreachable!()
             }
             wit_import(ptr1.cast_mut(), len1, ptr2);
-            let l3 = *ptr2.add(0).cast::<*mut u8>();
-            let l4 = *ptr2.add(4).cast::<usize>();
-            let len5 = l4;
-            let bytes5 = _rt::Vec::from_raw_parts(l3.cast(), len5, len5);
-            _rt::string_lift(bytes5)
+            let l3 = i32::from(*ptr2.add(0).cast::<u8>());
+            match l3 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l4 = *ptr2.add(4).cast::<*mut u8>();
+                        let l5 = *ptr2.add(8).cast::<usize>();
+                        let len6 = l5;
+                        let bytes6 = _rt::Vec::from_raw_parts(l4.cast(), len6, len6);
+
+                        _rt::string_lift(bytes6)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
 }
@@ -8282,25 +8448,156 @@ pub mod task {
     #[doc(hidden)]
     #[cfg(target_arch = "wasm32")]
     static __FORCE_SECTION_REF: fn() = super::__link_custom_section_describing_imports;
+    use super::_rt;
     #[allow(unused_unsafe, clippy::all)]
-    pub fn spawn(payload: &str) {
+    pub fn spawn(payload: &str) -> Result<(), _rt::String> {
         unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
             let vec0 = payload;
             let ptr0 = vec0.as_ptr().cast::<u8>();
             let len0 = vec0.len();
-
+            let ptr1 = ret_area.0.as_mut_ptr().cast::<u8>();
             #[cfg(target_arch = "wasm32")]
             #[link(wasm_import_module = "task")]
             extern "C" {
                 #[link_name = "spawn"]
-                fn wit_import(_: *mut u8, _: usize);
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            fn wit_import(_: *mut u8, _: usize) {
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
                 unreachable!()
             }
-            wit_import(ptr0.cast_mut(), len0);
+            wit_import(ptr0.cast_mut(), len0, ptr1);
+            let l2 = i32::from(*ptr1.add(0).cast::<u8>());
+            match l2 {
+                0 => {
+                    let e = ();
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l3 = *ptr1.add(4).cast::<*mut u8>();
+                        let l4 = *ptr1.add(8).cast::<usize>();
+                        let len5 = l4;
+                        let bytes5 = _rt::Vec::from_raw_parts(l3.cast(), len5, len5);
+
+                        _rt::string_lift(bytes5)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
+        }
+    }
+}
+
+#[allow(dead_code, clippy::all)]
+pub mod plat {
+    #[used]
+    #[doc(hidden)]
+    #[cfg(target_arch = "wasm32")]
+    static __FORCE_SECTION_REF: fn() = super::__link_custom_section_describing_imports;
+    use super::_rt;
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn sig(source: &[u8]) -> Result<_rt::Vec<u8>, _rt::String> {
+        unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
+            let vec0 = source;
+            let ptr0 = vec0.as_ptr().cast::<u8>();
+            let len0 = vec0.len();
+            let ptr1 = ret_area.0.as_mut_ptr().cast::<u8>();
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "plat")]
+            extern "C" {
+                #[link_name = "sig"]
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8) {
+                unreachable!()
+            }
+            wit_import(ptr0.cast_mut(), len0, ptr1);
+            let l2 = i32::from(*ptr1.add(0).cast::<u8>());
+            match l2 {
+                0 => {
+                    let e = {
+                        let l3 = *ptr1.add(4).cast::<*mut u8>();
+                        let l4 = *ptr1.add(8).cast::<usize>();
+                        let len5 = l4;
+
+                        _rt::Vec::from_raw_parts(l3.cast(), len5, len5)
+                    };
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l6 = *ptr1.add(4).cast::<*mut u8>();
+                        let l7 = *ptr1.add(8).cast::<usize>();
+                        let len8 = l7;
+                        let bytes8 = _rt::Vec::from_raw_parts(l6.cast(), len8, len8);
+
+                        _rt::string_lift(bytes8)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
+        }
+    }
+    #[allow(unused_unsafe, clippy::all)]
+    pub fn verify(source: &[u8], sig: &[u8]) -> Result<bool, _rt::String> {
+        unsafe {
+            #[repr(align(4))]
+            struct RetArea([::core::mem::MaybeUninit<u8>; 12]);
+            let mut ret_area = RetArea([::core::mem::MaybeUninit::uninit(); 12]);
+            let vec0 = source;
+            let ptr0 = vec0.as_ptr().cast::<u8>();
+            let len0 = vec0.len();
+            let vec1 = sig;
+            let ptr1 = vec1.as_ptr().cast::<u8>();
+            let len1 = vec1.len();
+            let ptr2 = ret_area.0.as_mut_ptr().cast::<u8>();
+            #[cfg(target_arch = "wasm32")]
+            #[link(wasm_import_module = "plat")]
+            extern "C" {
+                #[link_name = "verify"]
+                fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize, _: *mut u8);
+            }
+
+            #[cfg(not(target_arch = "wasm32"))]
+            fn wit_import(_: *mut u8, _: usize, _: *mut u8, _: usize, _: *mut u8) {
+                unreachable!()
+            }
+            wit_import(ptr0.cast_mut(), len0, ptr1.cast_mut(), len1, ptr2);
+            let l3 = i32::from(*ptr2.add(0).cast::<u8>());
+            match l3 {
+                0 => {
+                    let e = {
+                        let l4 = i32::from(*ptr2.add(4).cast::<u8>());
+
+                        _rt::bool_lift(l4 as u8)
+                    };
+                    Ok(e)
+                }
+                1 => {
+                    let e = {
+                        let l5 = *ptr2.add(4).cast::<*mut u8>();
+                        let l6 = *ptr2.add(8).cast::<usize>();
+                        let len7 = l6;
+                        let bytes7 = _rt::Vec::from_raw_parts(l5.cast(), len7, len7);
+
+                        _rt::string_lift(bytes7)
+                    };
+                    Err(e)
+                }
+                _ => _rt::invalid_enum_discriminant(),
+            }
         }
     }
 }
@@ -8368,13 +8665,42 @@ pub mod exports {
         use super::super::_rt;
         #[doc(hidden)]
         #[allow(non_snake_case)]
-        pub unsafe fn _export_on_start_cabi<T: Guest>() {
+        pub unsafe fn _export_on_start_cabi<T: Guest>() -> *mut u8 {
             #[cfg(target_arch = "wasm32")]
             _rt::run_ctors_once();
-            T::on_start();
+            let result0 = T::on_start();
+            let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+            match result0 {
+                Ok(_) => {
+                    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                }
+                Err(e) => {
+                    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                    let vec2 = (e.into_bytes()).into_boxed_slice();
+                    let ptr2 = vec2.as_ptr().cast::<u8>();
+                    let len2 = vec2.len();
+                    ::core::mem::forget(vec2);
+                    *ptr1.add(8).cast::<usize>() = len2;
+                    *ptr1.add(4).cast::<*mut u8>() = ptr2.cast_mut();
+                }
+            };
+            ptr1
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        pub unsafe fn __post_return_on_start<T: Guest>(arg0: *mut u8) {
+            let l0 = i32::from(*arg0.add(0).cast::<u8>());
+            match l0 {
+                0 => (),
+                _ => {
+                    let l1 = *arg0.add(4).cast::<*mut u8>();
+                    let l2 = *arg0.add(8).cast::<usize>();
+                    _rt::cabi_dealloc(l1, l2, 1);
+                }
+            }
         }
         pub trait Guest {
-            fn on_start();
+            fn on_start() -> Result<(), _rt::String>;
         }
         #[doc(hidden)]
 
@@ -8382,13 +8708,20 @@ pub mod exports {
   ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
 
     #[export_name = "lifecycle#on-start"]
-    unsafe extern "C" fn export_on_start() {
+    unsafe extern "C" fn export_on_start() -> *mut u8 {
       $($path_to_types)*::_export_on_start_cabi::<$ty>()
+    }
+    #[export_name = "cabi_post_lifecycle#on-start"]
+    unsafe extern "C" fn _post_return_on_start(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_on_start::<$ty>(arg0)
     }
   };);
 }
         #[doc(hidden)]
         pub(crate) use __export_lifecycle_cabi;
+        #[repr(align(4))]
+        struct _RetArea([::core::mem::MaybeUninit<u8>; 12]);
+        static mut _RET_AREA: _RetArea = _RetArea([::core::mem::MaybeUninit::uninit(); 12]);
     }
 
     #[allow(dead_code, clippy::all)]
@@ -8400,15 +8733,44 @@ pub mod exports {
         use super::super::_rt;
         #[doc(hidden)]
         #[allow(non_snake_case)]
-        pub unsafe fn _export_on_spawn_cabi<T: Guest>(arg0: *mut u8, arg1: usize) {
+        pub unsafe fn _export_on_spawn_cabi<T: Guest>(arg0: *mut u8, arg1: usize) -> *mut u8 {
             #[cfg(target_arch = "wasm32")]
             _rt::run_ctors_once();
             let len0 = arg1;
             let bytes0 = _rt::Vec::from_raw_parts(arg0.cast(), len0, len0);
-            T::on_spawn(_rt::string_lift(bytes0));
+            let result1 = T::on_spawn(_rt::string_lift(bytes0));
+            let ptr2 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+            match result1 {
+                Ok(_) => {
+                    *ptr2.add(0).cast::<u8>() = (0i32) as u8;
+                }
+                Err(e) => {
+                    *ptr2.add(0).cast::<u8>() = (1i32) as u8;
+                    let vec3 = (e.into_bytes()).into_boxed_slice();
+                    let ptr3 = vec3.as_ptr().cast::<u8>();
+                    let len3 = vec3.len();
+                    ::core::mem::forget(vec3);
+                    *ptr2.add(8).cast::<usize>() = len3;
+                    *ptr2.add(4).cast::<*mut u8>() = ptr3.cast_mut();
+                }
+            };
+            ptr2
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        pub unsafe fn __post_return_on_spawn<T: Guest>(arg0: *mut u8) {
+            let l0 = i32::from(*arg0.add(0).cast::<u8>());
+            match l0 {
+                0 => (),
+                _ => {
+                    let l1 = *arg0.add(4).cast::<*mut u8>();
+                    let l2 = *arg0.add(8).cast::<usize>();
+                    _rt::cabi_dealloc(l1, l2, 1);
+                }
+            }
         }
         pub trait Guest {
-            fn on_spawn(payload: _rt::String);
+            fn on_spawn(payload: _rt::String) -> Result<(), _rt::String>;
         }
         #[doc(hidden)]
 
@@ -8416,13 +8778,20 @@ pub mod exports {
   ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
 
     #[export_name = "task#on-spawn"]
-    unsafe extern "C" fn export_on_spawn(arg0: *mut u8,arg1: usize,) {
+    unsafe extern "C" fn export_on_spawn(arg0: *mut u8,arg1: usize,) -> *mut u8 {
       $($path_to_types)*::_export_on_spawn_cabi::<$ty>(arg0, arg1)
+    }
+    #[export_name = "cabi_post_task#on-spawn"]
+    unsafe extern "C" fn _post_return_on_spawn(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_on_spawn::<$ty>(arg0)
     }
   };);
 }
         #[doc(hidden)]
         pub(crate) use __export_task_cabi;
+        #[repr(align(4))]
+        struct _RetArea([::core::mem::MaybeUninit<u8>; 12]);
+        static mut _RET_AREA: _RetArea = _RetArea([::core::mem::MaybeUninit::uninit(); 12]);
     }
 }
 mod _rt {
@@ -8433,6 +8802,24 @@ mod _rt {
             String::from_utf8(bytes).unwrap()
         } else {
             String::from_utf8_unchecked(bytes)
+        }
+    }
+    pub unsafe fn invalid_enum_discriminant<T>() -> T {
+        if cfg!(debug_assertions) {
+            panic!("invalid enum discriminant")
+        } else {
+            core::hint::unreachable_unchecked()
+        }
+    }
+    pub unsafe fn bool_lift(val: u8) -> bool {
+        if cfg!(debug_assertions) {
+            match val {
+                0 => false,
+                1 => true,
+                _ => panic!("invalid bool discriminant"),
+            }
+        } else {
+            val != 0
         }
     }
 
@@ -8558,25 +8945,7 @@ mod _rt {
             }
         }
     }
-    pub unsafe fn bool_lift(val: u8) -> bool {
-        if cfg!(debug_assertions) {
-            match val {
-                0 => false,
-                1 => true,
-                _ => panic!("invalid bool discriminant"),
-            }
-        } else {
-            val != 0
-        }
-    }
     pub use alloc_crate::alloc;
-    pub unsafe fn invalid_enum_discriminant<T>() -> T {
-        if cfg!(debug_assertions) {
-            panic!("invalid enum discriminant")
-        } else {
-            core::hint::unreachable_unchecked()
-        }
-    }
     pub unsafe fn cabi_dealloc(ptr: *mut u8, size: usize, align: usize) {
         if size == 0 {
             return;
@@ -8695,59 +9064,62 @@ pub(crate) use __export_plat_world_impl as export;
 #[cfg(target_arch = "wasm32")]
 #[link_section = "component-type:wit-bindgen:0.25.0:plat-world:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 7447] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\x969\x01A\x02\x01A-\x01\
-B\x08\x01r\x01\x04names\x04\0\x0clock-handler\x03\0\0\x01@\x01\x04names\0\x01\x04\
-\0\x13create-lock-handler\x01\x02\x01@\x01\x07handler\x01\x01\0\x04\0\x11drop-lo\
-ck-handler\x01\x03\x04\0\x04lock\x01\x03\x04\0\x06unlock\x01\x03\x03\0\x04lock\x05\
-\0\x01B\x0a\x01r\x01\x04names\x04\0\x0fchannel-handler\x03\0\0\x01@\x01\x04names\
-\0\x01\x04\0\x16create-channel-handler\x01\x02\x01@\x01\x07handler\x01\x01\0\x04\
-\0\x14drop-channel-handler\x01\x03\x01@\x02\x07handler\x01\x07messages\x01\0\x04\
-\0\x04send\x01\x04\x01@\x01\x07handler\x01\0s\x04\0\x04recv\x01\x05\x03\0\x07cha\
-nnel\x05\x01\x01B\x02\x01@\x01\x07payloads\x01\0\x04\0\x05spawn\x01\0\x03\0\x04t\
-ask\x05\x02\x01B\x05\x01p}\x01@\x01\x03lenw\0\0\x04\0\x10get-random-bytes\x01\x01\
-\x01@\0\0w\x04\0\x0eget-random-u64\x01\x02\x03\x01\x18wasi:random/random@0.2.0\x05\
-\x03\x01B\x04\x04\0\x05error\x03\x01\x01h\0\x01@\x01\x04self\x01\0s\x04\0\x1d[me\
-thod]error.to-debug-string\x01\x02\x03\x01\x13wasi:io/error@0.2.0\x05\x04\x01B\x0a\
-\x04\0\x08pollable\x03\x01\x01h\0\x01@\x01\x04self\x01\0\x7f\x04\0\x16[method]po\
-llable.ready\x01\x02\x01@\x01\x04self\x01\x01\0\x04\0\x16[method]pollable.block\x01\
-\x03\x01p\x01\x01py\x01@\x01\x02in\x04\0\x05\x04\0\x04poll\x01\x06\x03\x01\x12wa\
-si:io/poll@0.2.0\x05\x05\x02\x03\0\x04\x05error\x02\x03\0\x05\x08pollable\x01B(\x02\
-\x03\x02\x01\x06\x04\0\x05error\x03\0\0\x02\x03\x02\x01\x07\x04\0\x08pollable\x03\
-\0\x02\x01i\x01\x01q\x02\x15last-operation-failed\x01\x04\0\x06closed\0\0\x04\0\x0c\
-stream-error\x03\0\x05\x04\0\x0cinput-stream\x03\x01\x04\0\x0doutput-stream\x03\x01\
-\x01h\x07\x01p}\x01j\x01\x0a\x01\x06\x01@\x02\x04self\x09\x03lenw\0\x0b\x04\0\x19\
-[method]input-stream.read\x01\x0c\x04\0\"[method]input-stream.blocking-read\x01\x0c\
-\x01j\x01w\x01\x06\x01@\x02\x04self\x09\x03lenw\0\x0d\x04\0\x19[method]input-str\
-eam.skip\x01\x0e\x04\0\"[method]input-stream.blocking-skip\x01\x0e\x01i\x03\x01@\
-\x01\x04self\x09\0\x0f\x04\0\x1e[method]input-stream.subscribe\x01\x10\x01h\x08\x01\
-@\x01\x04self\x11\0\x0d\x04\0![method]output-stream.check-write\x01\x12\x01j\0\x01\
-\x06\x01@\x02\x04self\x11\x08contents\x0a\0\x13\x04\0\x1b[method]output-stream.w\
-rite\x01\x14\x04\0.[method]output-stream.blocking-write-and-flush\x01\x14\x01@\x01\
-\x04self\x11\0\x13\x04\0\x1b[method]output-stream.flush\x01\x15\x04\0$[method]ou\
-tput-stream.blocking-flush\x01\x15\x01@\x01\x04self\x11\0\x0f\x04\0\x1f[method]o\
-utput-stream.subscribe\x01\x16\x01@\x02\x04self\x11\x03lenw\0\x13\x04\0\"[method\
-]output-stream.write-zeroes\x01\x17\x04\05[method]output-stream.blocking-write-z\
-eroes-and-flush\x01\x17\x01@\x03\x04self\x11\x03src\x09\x03lenw\0\x0d\x04\0\x1c[\
-method]output-stream.splice\x01\x18\x04\0%[method]output-stream.blocking-splice\x01\
-\x18\x03\x01\x15wasi:io/streams@0.2.0\x05\x08\x02\x03\0\x06\x0doutput-stream\x01\
-B\x05\x02\x03\x02\x01\x09\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\
-\0\x0aget-stdout\x01\x03\x03\x01\x15wasi:cli/stdout@0.2.0\x05\x0a\x01B\x05\x02\x03\
-\x02\x01\x09\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\0\x0aget-s\
-tderr\x01\x03\x03\x01\x15wasi:cli/stderr@0.2.0\x05\x0b\x02\x03\0\x06\x0cinput-st\
-ream\x01B\x05\x02\x03\x02\x01\x0c\x04\0\x0cinput-stream\x03\0\0\x01i\x01\x01@\0\0\
-\x02\x04\0\x09get-stdin\x01\x03\x03\x01\x14wasi:cli/stdin@0.2.0\x05\x0d\x01B\x0f\
-\x02\x03\x02\x01\x07\x04\0\x08pollable\x03\0\0\x01w\x04\0\x07instant\x03\0\x02\x01\
-w\x04\0\x08duration\x03\0\x04\x01@\0\0\x03\x04\0\x03now\x01\x06\x01@\0\0\x05\x04\
-\0\x0aresolution\x01\x07\x01i\x01\x01@\x01\x04when\x03\0\x08\x04\0\x11subscribe-\
-instant\x01\x09\x01@\x01\x04when\x05\0\x08\x04\0\x12subscribe-duration\x01\x0a\x03\
-\x01!wasi:clocks/monotonic-clock@0.2.0\x05\x0e\x02\x03\0\x0a\x08duration\x01B\xc0\
-\x01\x02\x03\x02\x01\x0f\x04\0\x08duration\x03\0\0\x02\x03\x02\x01\x0c\x04\0\x0c\
-input-stream\x03\0\x02\x02\x03\x02\x01\x09\x04\0\x0doutput-stream\x03\0\x04\x02\x03\
-\x02\x01\x06\x04\0\x08io-error\x03\0\x06\x02\x03\x02\x01\x07\x04\0\x08pollable\x03\
-\0\x08\x01q\x0a\x03get\0\0\x04head\0\0\x04post\0\0\x03put\0\0\x06delete\0\0\x07c\
-onnect\0\0\x07options\0\0\x05trace\0\0\x05patch\0\0\x05other\x01s\0\x04\0\x06met\
-hod\x03\0\x0a\x01q\x03\x04HTTP\0\0\x05HTTPS\0\0\x05other\x01s\0\x04\0\x06scheme\x03\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 7547] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xfa9\x01A\x02\x01A/\x01\
+B\x0a\x01r\x01\x04names\x04\0\x0clock-handler\x03\0\0\x01j\x01\x01\x01s\x01@\x01\
+\x04names\0\x02\x04\0\x13create-lock-handler\x01\x03\x01j\0\x01s\x01@\x01\x07han\
+dler\x01\0\x04\x04\0\x11drop-lock-handler\x01\x05\x04\0\x04lock\x01\x05\x04\0\x06\
+unlock\x01\x05\x03\0\x04lock\x05\0\x01B\x0b\x01r\x01\x04names\x04\0\x0fchannel-h\
+andler\x03\0\0\x01j\x01\x01\x01s\x01@\x01\x04names\0\x02\x04\0\x16create-channel\
+-handler\x01\x03\x01j\0\x01s\x01@\x01\x07handler\x01\0\x04\x04\0\x14drop-channel\
+-handler\x01\x05\x01@\x02\x07handler\x01\x07messages\0\x04\x04\0\x04send\x01\x06\
+\x04\0\x04recv\x01\x05\x03\0\x07channel\x05\x01\x01B\x03\x01j\0\x01s\x01@\x01\x07\
+payloads\0\0\x04\0\x05spawn\x01\x01\x03\0\x04task\x05\x02\x01B\x07\x01p}\x01j\x01\
+\0\x01s\x01@\x01\x06source\0\0\x01\x04\0\x03sig\x01\x02\x01j\x01\x7f\x01s\x01@\x02\
+\x06source\0\x03sig\0\0\x03\x04\0\x06verify\x01\x04\x03\0\x04plat\x05\x03\x01B\x05\
+\x01p}\x01@\x01\x03lenw\0\0\x04\0\x10get-random-bytes\x01\x01\x01@\0\0w\x04\0\x0e\
+get-random-u64\x01\x02\x03\x01\x18wasi:random/random@0.2.0\x05\x04\x01B\x04\x04\0\
+\x05error\x03\x01\x01h\0\x01@\x01\x04self\x01\0s\x04\0\x1d[method]error.to-debug\
+-string\x01\x02\x03\x01\x13wasi:io/error@0.2.0\x05\x05\x01B\x0a\x04\0\x08pollabl\
+e\x03\x01\x01h\0\x01@\x01\x04self\x01\0\x7f\x04\0\x16[method]pollable.ready\x01\x02\
+\x01@\x01\x04self\x01\x01\0\x04\0\x16[method]pollable.block\x01\x03\x01p\x01\x01\
+py\x01@\x01\x02in\x04\0\x05\x04\0\x04poll\x01\x06\x03\x01\x12wasi:io/poll@0.2.0\x05\
+\x06\x02\x03\0\x05\x05error\x02\x03\0\x06\x08pollable\x01B(\x02\x03\x02\x01\x07\x04\
+\0\x05error\x03\0\0\x02\x03\x02\x01\x08\x04\0\x08pollable\x03\0\x02\x01i\x01\x01\
+q\x02\x15last-operation-failed\x01\x04\0\x06closed\0\0\x04\0\x0cstream-error\x03\
+\0\x05\x04\0\x0cinput-stream\x03\x01\x04\0\x0doutput-stream\x03\x01\x01h\x07\x01\
+p}\x01j\x01\x0a\x01\x06\x01@\x02\x04self\x09\x03lenw\0\x0b\x04\0\x19[method]inpu\
+t-stream.read\x01\x0c\x04\0\"[method]input-stream.blocking-read\x01\x0c\x01j\x01\
+w\x01\x06\x01@\x02\x04self\x09\x03lenw\0\x0d\x04\0\x19[method]input-stream.skip\x01\
+\x0e\x04\0\"[method]input-stream.blocking-skip\x01\x0e\x01i\x03\x01@\x01\x04self\
+\x09\0\x0f\x04\0\x1e[method]input-stream.subscribe\x01\x10\x01h\x08\x01@\x01\x04\
+self\x11\0\x0d\x04\0![method]output-stream.check-write\x01\x12\x01j\0\x01\x06\x01\
+@\x02\x04self\x11\x08contents\x0a\0\x13\x04\0\x1b[method]output-stream.write\x01\
+\x14\x04\0.[method]output-stream.blocking-write-and-flush\x01\x14\x01@\x01\x04se\
+lf\x11\0\x13\x04\0\x1b[method]output-stream.flush\x01\x15\x04\0$[method]output-s\
+tream.blocking-flush\x01\x15\x01@\x01\x04self\x11\0\x0f\x04\0\x1f[method]output-\
+stream.subscribe\x01\x16\x01@\x02\x04self\x11\x03lenw\0\x13\x04\0\"[method]outpu\
+t-stream.write-zeroes\x01\x17\x04\05[method]output-stream.blocking-write-zeroes-\
+and-flush\x01\x17\x01@\x03\x04self\x11\x03src\x09\x03lenw\0\x0d\x04\0\x1c[method\
+]output-stream.splice\x01\x18\x04\0%[method]output-stream.blocking-splice\x01\x18\
+\x03\x01\x15wasi:io/streams@0.2.0\x05\x09\x02\x03\0\x07\x0doutput-stream\x01B\x05\
+\x02\x03\x02\x01\x0a\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\0\x0a\
+get-stdout\x01\x03\x03\x01\x15wasi:cli/stdout@0.2.0\x05\x0b\x01B\x05\x02\x03\x02\
+\x01\x0a\x04\0\x0doutput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\x04\0\x0aget-stder\
+r\x01\x03\x03\x01\x15wasi:cli/stderr@0.2.0\x05\x0c\x02\x03\0\x07\x0cinput-stream\
+\x01B\x05\x02\x03\x02\x01\x0d\x04\0\x0cinput-stream\x03\0\0\x01i\x01\x01@\0\0\x02\
+\x04\0\x09get-stdin\x01\x03\x03\x01\x14wasi:cli/stdin@0.2.0\x05\x0e\x01B\x0f\x02\
+\x03\x02\x01\x08\x04\0\x08pollable\x03\0\0\x01w\x04\0\x07instant\x03\0\x02\x01w\x04\
+\0\x08duration\x03\0\x04\x01@\0\0\x03\x04\0\x03now\x01\x06\x01@\0\0\x05\x04\0\x0a\
+resolution\x01\x07\x01i\x01\x01@\x01\x04when\x03\0\x08\x04\0\x11subscribe-instan\
+t\x01\x09\x01@\x01\x04when\x05\0\x08\x04\0\x12subscribe-duration\x01\x0a\x03\x01\
+!wasi:clocks/monotonic-clock@0.2.0\x05\x0f\x02\x03\0\x0b\x08duration\x01B\xc0\x01\
+\x02\x03\x02\x01\x10\x04\0\x08duration\x03\0\0\x02\x03\x02\x01\x0d\x04\0\x0cinpu\
+t-stream\x03\0\x02\x02\x03\x02\x01\x0a\x04\0\x0doutput-stream\x03\0\x04\x02\x03\x02\
+\x01\x07\x04\0\x08io-error\x03\0\x06\x02\x03\x02\x01\x08\x04\0\x08pollable\x03\0\
+\x08\x01q\x0a\x03get\0\0\x04head\0\0\x04post\0\0\x03put\0\0\x06delete\0\0\x07con\
+nect\0\0\x07options\0\0\x05trace\0\0\x05patch\0\0\x05other\x01s\0\x04\0\x06metho\
+d\x03\0\x0a\x01q\x03\x04HTTP\0\0\x05HTTPS\0\0\x05other\x01s\0\x04\0\x06scheme\x03\
 \0\x0c\x01ks\x01k{\x01r\x02\x05rcode\x0e\x09info-code\x0f\x04\0\x11DNS-error-pay\
 load\x03\0\x10\x01k}\x01r\x02\x08alert-id\x12\x0dalert-message\x0e\x04\0\x1aTLS-\
 alert-received-payload\x03\0\x13\x01ky\x01r\x02\x0afield-name\x0e\x0afield-size\x15\
@@ -8829,25 +9201,25 @@ d]outgoing-response.body\x01|\x01h/\x01i\x05\x01j\x01\xfe\0\0\x01@\x01\x04self\x
 g-response.subscribe\x01\x84\x01\x01i+\x01j\x01\x85\x01\x01\x1b\x01j\x01\x86\x01\
 \0\x01k\x87\x01\x01@\x01\x04self\x83\x01\0\x88\x01\x04\0$[method]future-incoming\
 -response.get\x01\x89\x01\x01h\x07\x01k\x1b\x01@\x01\x03err\x8a\x01\0\x8b\x01\x04\
-\0\x0fhttp-error-code\x01\x8c\x01\x03\x01\x15wasi:http/types@0.2.0\x05\x10\x02\x03\
-\0\x0b\x10outgoing-request\x02\x03\0\x0b\x0frequest-options\x02\x03\0\x0b\x18fut\
-ure-incoming-response\x02\x03\0\x0b\x0aerror-code\x01B\x0f\x02\x03\x02\x01\x11\x04\
-\0\x10outgoing-request\x03\0\0\x02\x03\x02\x01\x12\x04\0\x0frequest-options\x03\0\
-\x02\x02\x03\x02\x01\x13\x04\0\x18future-incoming-response\x03\0\x04\x02\x03\x02\
-\x01\x14\x04\0\x0aerror-code\x03\0\x06\x01i\x01\x01i\x03\x01k\x09\x01i\x05\x01j\x01\
+\0\x0fhttp-error-code\x01\x8c\x01\x03\x01\x15wasi:http/types@0.2.0\x05\x11\x02\x03\
+\0\x0c\x10outgoing-request\x02\x03\0\x0c\x0frequest-options\x02\x03\0\x0c\x18fut\
+ure-incoming-response\x02\x03\0\x0c\x0aerror-code\x01B\x0f\x02\x03\x02\x01\x12\x04\
+\0\x10outgoing-request\x03\0\0\x02\x03\x02\x01\x13\x04\0\x0frequest-options\x03\0\
+\x02\x02\x03\x02\x01\x14\x04\0\x18future-incoming-response\x03\0\x04\x02\x03\x02\
+\x01\x15\x04\0\x0aerror-code\x03\0\x06\x01i\x01\x01i\x03\x01k\x09\x01i\x05\x01j\x01\
 \x0b\x01\x07\x01@\x02\x07request\x08\x07options\x0a\0\x0c\x04\0\x06handle\x01\x0d\
-\x03\x01\x20wasi:http/outgoing-handler@0.2.0\x05\x15\x01B\x05\x01r\x02\x07second\
+\x03\x01\x20wasi:http/outgoing-handler@0.2.0\x05\x16\x01B\x05\x01r\x02\x07second\
 sw\x0bnanosecondsy\x04\0\x08datetime\x03\0\0\x01@\0\0\x01\x04\0\x03now\x01\x02\x04\
-\0\x0aresolution\x01\x02\x03\x01\x1cwasi:clocks/wall-clock@0.2.0\x05\x16\x01B\x02\
-\x01@\0\x01\0\x04\0\x08on-start\x01\0\x04\0\x09lifecycle\x05\x17\x01B\x02\x01@\x01\
-\x07payloads\x01\0\x04\0\x08on-spawn\x01\0\x04\0\x04task\x05\x18\x02\x03\0\x0b\x10\
-incoming-request\x02\x03\0\x0b\x11response-outparam\x01B\x08\x02\x03\x02\x01\x19\
-\x04\0\x10incoming-request\x03\0\0\x02\x03\x02\x01\x1a\x04\0\x11response-outpara\
-m\x03\0\x02\x01i\x01\x01i\x03\x01@\x02\x07request\x04\x0cresponse-out\x05\x01\0\x04\
-\0\x06handle\x01\x06\x04\x01\x20wasi:http/incoming-handler@0.2.0\x05\x1b\x04\x01\
-\x16plat:plugin/plat-world\x04\0\x0b\x10\x01\0\x0aplat-world\x03\0\0\0G\x09produ\
-cers\x01\x0cprocessed-by\x02\x0dwit-component\x070.208.1\x10wit-bindgen-rust\x06\
-0.25.0";
+\0\x0aresolution\x01\x02\x03\x01\x1cwasi:clocks/wall-clock@0.2.0\x05\x17\x01B\x03\
+\x01j\0\x01s\x01@\0\0\0\x04\0\x08on-start\x01\x01\x04\0\x09lifecycle\x05\x18\x01\
+B\x03\x01j\0\x01s\x01@\x01\x07payloads\0\0\x04\0\x08on-spawn\x01\x01\x04\0\x04ta\
+sk\x05\x19\x02\x03\0\x0c\x10incoming-request\x02\x03\0\x0c\x11response-outparam\x01\
+B\x08\x02\x03\x02\x01\x1a\x04\0\x10incoming-request\x03\0\0\x02\x03\x02\x01\x1b\x04\
+\0\x11response-outparam\x03\0\x02\x01i\x01\x01i\x03\x01@\x02\x07request\x04\x0cr\
+esponse-out\x05\x01\0\x04\0\x06handle\x01\x06\x04\x01\x20wasi:http/incoming-hand\
+ler@0.2.0\x05\x1c\x04\x01\x16plat:plugin/plat-world\x04\0\x0b\x10\x01\0\x0aplat-\
+world\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.208.\
+1\x10wit-bindgen-rust\x060.25.0";
 
 #[inline(never)]
 #[doc(hidden)]
