@@ -19,7 +19,7 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
         let mut app = App::new();
         app.layer(|ctx| {
             let mut router = Router::new();
-            router.get("/api/check", |ctx, p| {
+            router.get("/api/check", |ctx, _| {
                 let public_key = env::var("daemon_public_key").unwrap();
                 let cur_user = Identity::find_by_public_key(public_key.clone());
 
@@ -40,6 +40,19 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
                 identity.save();
 
                 ctx.text(200, "OK".to_string());
+                Ok(())
+            });
+            router.get("/api/current", |ctx, _| {
+                let identity =
+                    match Identity::find_by_public_key(env::var("daemon_public_key").unwrap()) {
+                        Some(value) => value,
+                        None => {
+                            ctx.json(200, &json!({"identity": None::<Identity>}));
+                            return Ok(());
+                        }
+                    };
+
+                ctx.json(200, &json!({"identity": &identity}));
                 Ok(())
             });
             router.get("/:path*", |ctx, p| {
