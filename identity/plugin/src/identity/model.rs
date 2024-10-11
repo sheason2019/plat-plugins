@@ -28,7 +28,6 @@ impl Identity {
             let file_bytes = fs::read(identity_path).unwrap();
             Some(serde_json::from_slice(&file_bytes).unwrap())
         }
-        // TODO: 校验 Sig 是否存在，若不存在则删除 identity 文件
     }
 
     pub fn save(&self) {

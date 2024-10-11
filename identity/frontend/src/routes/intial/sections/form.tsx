@@ -11,7 +11,6 @@ export default function FormSection({ setSection }: SectionProps) {
       public_key: "",
       username: e.get("username")?.toString() ?? "",
       avatar_url: "",
-      x25519_public_keys: [],
       hosts: [],
     };
     await axios.put("/api/current", identity);

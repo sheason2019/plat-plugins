@@ -5,7 +5,7 @@ mod identity;
 mod typings;
 mod utils;
 
-use std::env;
+use std::{env, path::Path};
 
 use bindings::wasi::http::types::{IncomingRequest, ResponseOutparam};
 use express::{app::App, router::Router};
@@ -40,6 +40,17 @@ impl bindings::exports::wasi::http::incoming_handler::Guest for Component {
                 identity.save();
 
                 ctx.text(200, "OK".to_string());
+                Ok(())
+            });
+            router.get("/:path*", |ctx, p| {
+                let path_pair = p.params_iter().find(|i| i.0 == "path").unwrap();
+                let asset_name = match path_pair.1.len() {
+                    0 => "index.html",
+                    _ => path_pair.1,
+                };
+
+                ctx.file(Path::new("/assets").join(asset_name));
+
                 Ok(())
             });
 
